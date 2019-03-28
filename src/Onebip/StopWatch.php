@@ -7,19 +7,19 @@ interface StopWatch
 
     /**
      * @return float
-     * @throws Onebip\StopWatch\StopWatchNotStartedException
+     * @throws \Onebip\StopWatch\StopWatchNotStartedException
      */
     public function elapsedSeconds();
 
     /**
      * @return float
-     * @throws Onebip\StopWatch\StopWatchNotStartedException
+     * @throws \Onebip\StopWatch\StopWatchNotStartedException
      */
     public function elapsedMilliseconds();
 
     /**
      * @return float
-     * @throws Onebip\StopWatch\StopWatchNotStartedException
+     * @throws \Onebip\StopWatch\StopWatchNotStartedException
      */
     public function elapsedMicroseconds();
 }

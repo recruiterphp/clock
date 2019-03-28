@@ -7,6 +7,7 @@ class RangeIterator implements \Iterator
     private $to;
     private $comparator;
     private $incrementer;
+    private $index;
 
     private $current;
 
