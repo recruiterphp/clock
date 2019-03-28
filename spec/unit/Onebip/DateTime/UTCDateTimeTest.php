@@ -8,21 +8,11 @@ use DateTimeZone;
 use Eris;
 use Eris\Generator;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
-use MongoDate;
 use PHPUnit_Framework_TestCase;
 
 class UTCDateTimeTest extends PHPUnit_Framework_TestCase
 {
     use Eris\TestTrait;
-
-
-    public function testBoxingMongoDate()
-    {
-        $mongoDate = new MongoDate();
-        $dateTime = UTCDateTime::box($mongoDate);
-
-        $this->assertEquals($mongoDate, $dateTime->toMongoDate());
-    }
 
     public function testBoxingUTCMongoDate()
     {
@@ -110,42 +100,6 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @requires extension mongo
-     */
-    public function testBoxingDateTimeAndUnboxingMongoDate()
-    {
-        $date = new DateTime();
-        $dateTime = UTCDateTime::box($date);
-
-        $output = $dateTime->toMongoDate();
-
-        $expectedOutput = new MongoDate(
-            $date->getTimestamp(),
-            0
-        );
-
-        $this->assertEquals($expectedOutput, $output);
-    }
-
-    /**
-     * @requires extension mongo
-     */
-    public function testBoxingMongoDateAndUnboxingDateTime()
-    {
-        $mongoDate = new MongoDate();
-        $dateTime = UTCDateTime::box($mongoDate);
-
-        $expectedDateTime = DateTime::createFromFormat(
-            "U",
-            $mongoDate->sec,
-            new DateTimeZone("UTC")
-        );
-        $expectedDateTime->setTimeZone(new DateTimeZone("UTC"));
-
-        $this->assertEquals($expectedDateTime, $dateTime->toDateTime(new DateTimeZone("UTC")));
-    }
-
     public function testFromStringFactoryMethod()
     {
         $expectedDate = UTCDateTime::fromTimestamp(0);
@@ -209,7 +163,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
             Generator\choose(0, 364),
             Generator\choose(0, 364)
         )
-            ->then(function($year, $dayOfYear, $anotherDayOfYear) {
+            ->then(function ($year, $dayOfYear, $anotherDayOfYear) {
                 $day = UTCDateTime::fromZeroBasedDayOfYear($year, $dayOfYear);
                 $anotherDay = UTCDateTime::fromZeroBasedDayOfYear($year, $anotherDayOfYear);
                 $this->assertEquals(
@@ -218,7 +172,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
                     "Days of the year $year: $dayOfYear, $anotherDayOfYear" . PHP_EOL
                     . "{$day->toIso8601()}, {$anotherDay->toIso8601()}"
                 );
-        });
+            });
     }
 
     public function testFromOneDayOfYearFactoryMethodRespectsDistanceBetweenDays()
@@ -228,7 +182,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
             Generator\choose(1, 365),
             Generator\choose(1, 365)
         )
-            ->then(function($year, $dayOfYear, $anotherDayOfYear) {
+            ->then(function ($year, $dayOfYear, $anotherDayOfYear) {
                 $day = UTCDateTime::fromOneBasedDayOfYear($year, $dayOfYear);
                 $anotherDay = UTCDateTime::fromOneBasedDayOfYear($year, $anotherDayOfYear);
                 $this->assertEquals(
@@ -237,7 +191,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
                     "Days of the year $year: $dayOfYear, $anotherDayOfYear" . PHP_EOL
                     . "{$day->toIso8601()}, {$anotherDay->toIso8601()}"
                 );
-        });
+            });
     }
 
     public function testCanBeDumpedAsAHumanReadableString()
@@ -389,7 +343,8 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testSort() {
+    public function testSort()
+    {
         $this->assertEquals(
             0,
             UTCDateTime::sort(
@@ -425,20 +380,19 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
                 UTCDateTime::fromMicrotime("0 1000000000")
             )
         );
-
     }
 
     public function testSorting()
     {
         $actual = [
-            UTCDateTime::fromString ('2000-01-01'),
-            UTCDateTime::fromString ('2003-01-01'),
-            UTCDateTime::fromString ('2001-01-01')
+            UTCDateTime::fromString('2000-01-01'),
+            UTCDateTime::fromString('2003-01-01'),
+            UTCDateTime::fromString('2001-01-01')
         ];
         $expected = [
-            UTCDateTime::fromString ('2000-01-01'),
-            UTCDateTime::fromString ('2001-01-01'),
-            UTCDateTime::fromString ('2003-01-01')
+            UTCDateTime::fromString('2000-01-01'),
+            UTCDateTime::fromString('2001-01-01'),
+            UTCDateTime::fromString('2003-01-01')
         ];
         usort($actual, '\Onebip\DateTime\UTCDateTime::sort');
         $this->assertEquals($expected, $actual);
