@@ -40,7 +40,7 @@ final class UTCDateTimeRange
         $this->to = $to;
         $this->toOperator = $toOperator;
         $this->defaultFormatter = function (UTCDateTime $date) {
-            return $date->toMongoDate();
+            return $date->toMongoUTCDateTime();
         };
     }
 
@@ -64,16 +64,20 @@ final class UTCDateTimeRange
     private function mongoOperator($toOperator)
     {
         switch ($toOperator) {
-            case self::LESS_THAN: return '$lt';
-            case self::LESS_THAN_EQUALS: return '$lte';
+            case self::LESS_THAN:
+                return '$lt';
+            case self::LESS_THAN_EQUALS:
+                return '$lte';
         }
     }
 
     private function toOperatorParenthesis($toOperator)
     {
         switch ($toOperator) {
-            case self::LESS_THAN: return ')';
-            case self::LESS_THAN_EQUALS: return ']';
+            case self::LESS_THAN:
+                return ')';
+            case self::LESS_THAN_EQUALS:
+                return ']';
         }
     }
 
@@ -181,10 +185,14 @@ final class UTCDateTimeRange
     private function dateComparator()
     {
         switch ($this->toOperator) {
-        case self::LESS_THAN:
-            return function ($x, $y) { return $x < $y; };
-        case self::LESS_THAN_EQUALS:
-            return function ($x, $y) { return $x <= $y; };
+            case self::LESS_THAN:
+                return function ($x, $y) {
+                    return $x < $y;
+                };
+            case self::LESS_THAN_EQUALS:
+                return function ($x, $y) {
+                    return $x <= $y;
+                };
         }
     }
 }

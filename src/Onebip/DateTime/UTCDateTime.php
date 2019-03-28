@@ -9,7 +9,6 @@ use DateTimeZone;
 use InvalidArgumentException;
 use JsonSerializable;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
-use MongoDate;
 
 final class UTCDateTime implements JsonSerializable
 {
@@ -27,11 +26,6 @@ final class UTCDateTime implements JsonSerializable
     public function __toString()
     {
         return $this->sec . ' ' . $this->usec;
-    }
-
-    public function toMongoDate()
-    {
-        return new MongoDate($this->sec, $this->usec);
     }
 
     public function toMongoUTCDateTime()
@@ -146,9 +140,6 @@ final class UTCDateTime implements JsonSerializable
 
         $clonedDateToBox = clone $dateToBox;
 
-        if ($clonedDateToBox instanceof MongoDate) {
-            return new self($clonedDateToBox->sec, $clonedDateToBox->usec);
-        }
         if ($clonedDateToBox instanceof DateTimeInterface) {
             return new self($clonedDateToBox->getTimestamp(), 0);
         }
