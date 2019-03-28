@@ -37,20 +37,22 @@ final class UTCDateTime implements JsonSerializable
     public function toMongoUTCDateTime()
     {
         return new MongoUTCDateTime(
-            $this->sec * 1000 + (int) round($this->usec / 1000)
+            intval($this->sec * 1000 + (int) round($this->usec / 1000))
         );
     }
 
     public function toDateTime(DateTimeZone $timeZone = null)
     {
-        if(is_null($timeZone)) {
+        if (is_null($timeZone)) {
             $timeZone = new DateTimeZone("UTC");
         }
         $date = DateTime::createFromFormat(
             "U",
             $this->sec
         );
-        $date->setTimeZone($timeZone);
+        if ($date) {
+            $date->setTimeZone($timeZone);
+        }
 
         return $date;
     }
@@ -134,7 +136,7 @@ final class UTCDateTime implements JsonSerializable
         }
 
         if ($dateToBox instanceof MongoUTCDateTime) {
-            $msec = (string)$dateToBox + 0;
+            $msec = intval((string)$dateToBox);
 
             return new self(
                 (int) ($msec / 1000),
@@ -157,18 +159,18 @@ final class UTCDateTime implements JsonSerializable
         $pieces = explode('.', $string);
 
         switch (count($pieces)) {
-        case 1:
-            return self::box(new DateTime($string, $timeZone));
-        case 2:
-            list($dateTime, $fractional) = $pieces;
-            $padded = str_pad($fractional, 6, '0', STR_PAD_RIGHT);
+            case 1:
+                return self::box(new DateTime($string, $timeZone));
+            case 2:
+                list($dateTime, $fractional) = $pieces;
+                $padded = str_pad($fractional, 6, '0', STR_PAD_RIGHT);
 
-            return self::box(new DateTime($dateTime, $timeZone))
+                return self::box(new DateTime($dateTime, $timeZone))
                         ->withUsec((int)$padded);
-        default:
-            throw new InvalidArgumentException(
-                "expected ISO8601 with/without one fractional part separated by dot, got " . var_export($string, true)
-            );
+            default:
+                throw new InvalidArgumentException(
+                    "expected ISO8601 with/without one fractional part separated by dot, got " . var_export($string, true)
+                );
         }
     }
 
@@ -204,7 +206,8 @@ final class UTCDateTime implements JsonSerializable
     public static function fromMicrotime($microtimeString)
     {
         list($usec, $sec) = explode(" ", $microtimeString);
-        if($usec >= 1) {
+        $usec = floatval($usec);
+        if ($usec >= 1) {
             throw new \Exception("usec parameter can’t be more than 1 second: {$usec}");
         }
         return new self($sec, $usec * 1000 * 1000);
@@ -258,7 +261,7 @@ final class UTCDateTime implements JsonSerializable
     {
         if ($this->sec + $seconds > self::MAX_SECS) {
             $sec = self::MAX_SECS;
-        } else if ($this->sec + $seconds < 0) {
+        } elseif ($this->sec + $seconds < 0) {
             $sec = 0;
         } else {
             $sec = $this->sec + $seconds;
@@ -367,10 +370,10 @@ final class UTCDateTime implements JsonSerializable
 
     public static function sort($a, $b)
     {
-        if($a->sec() == $b->sec() && $a->usec() == $b->usec()) {
+        if ($a->sec() == $b->sec() && $a->usec() == $b->usec()) {
             return 0;
         }
-        if($a->sec() == $b->sec()) {
+        if ($a->sec() == $b->sec()) {
             return $a->usec() < $b->usec() ? -1 : 1;
         } else {
             return $a->sec() < $b->sec() ? -1 : 1;
