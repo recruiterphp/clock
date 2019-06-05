@@ -11,12 +11,12 @@
     },
     "autoload": {
         "psr-0": {
-            "RecruiterPhp\\": "src/"
+            "Recruiter\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-0": {
-          "RecruiterPhp\\": ["spec/unit/"]
+          "Recruiter\\": ["spec/unit/"]
         }
     }
 }
