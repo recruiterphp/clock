@@ -1,5 +1,5 @@
 {
-    "name": "onebip/onebip-clock",
+    "name": "recruiterphp/clock",
     "license": "MIT",
     "require": {
         "php": ">=7.1",
@@ -11,12 +11,12 @@
     },
     "autoload": {
         "psr-0": {
-            "Onebip\\": "src/"
+            "RecruiterPhp\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-0": {
-          "Onebip\\": ["spec/unit/"]
+          "RecruiterPhp\\": ["spec/unit/"]
         }
     }
 }
