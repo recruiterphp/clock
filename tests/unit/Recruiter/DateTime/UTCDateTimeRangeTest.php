@@ -9,7 +9,7 @@ use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 #[CoversClass(UTCDateTimeRange::class)]
 class UTCDateTimeRangeTest extends TestCase
 {
-    public function testItCanBuildAClosedInterval()
+    public function testItCanBuildAClosedInterval(): void
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('1985-05-21'),
@@ -25,7 +25,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testItCanBuildARightOpenInterval()
+    public function testItCanBuildARightOpenInterval(): void
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('1985-05-21'),
@@ -41,7 +41,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testToMongoQueryOnFieldShouldReturnTheSameQueryTheNotParameterizedVersion()
+    public function testToMongoQueryOnFieldShouldReturnTheSameQueryTheNotParameterizedVersion(): void
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('1985-05-21'),
@@ -59,7 +59,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testItCanExposeFrom()
+    public function testItCanExposeFrom(): void
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             $from = UTCDateTime::box('1985-05-21 10:00'),
@@ -69,7 +69,7 @@ class UTCDateTimeRangeTest extends TestCase
         $this->assertEquals($from, $range->from());
     }
 
-    public function testItCanBeConvertedInApiFormat()
+    public function testItCanBeConvertedInApiFormat(): void
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01'),
@@ -79,7 +79,7 @@ class UTCDateTimeRangeTest extends TestCase
         $this->assertEquals('20150101000000..20150102000000', $range->toApiFormat());
     }
 
-    public function testHourExcludedRangeGenerator()
+    public function testHourExcludedRangeGenerator(): void
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01 03:00'),
@@ -95,7 +95,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testHourIncludedRangeGenerator()
+    public function testHourIncludedRangeGenerator(): void
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('2015-01-01 03:00'),
@@ -112,7 +112,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testDayExcludedRangeGenerator()
+    public function testDayExcludedRangeGenerator(): void
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01 03:00'),
@@ -128,7 +128,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testDayIncludedRangeGenerator()
+    public function testDayIncludedRangeGenerator(): void
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('2015-01-01 03:00'),
@@ -145,7 +145,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testMonthExcludedRangeGenerator()
+    public function testMonthExcludedRangeGenerator(): void
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01 03:00'),
@@ -161,7 +161,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testMonthIncludedRangeGenerator()
+    public function testMonthIncludedRangeGenerator(): void
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('2015-01-01 03:00'),
@@ -202,12 +202,12 @@ class UTCDateTimeRangeTest extends TestCase
     /**
      * @dataProvider debugInfoExamples
      */
-    public function testDebugInfo(UTCDateTimeRange $range, $expected)
+    public function testDebugInfo(UTCDateTimeRange $range, $expected): void
     {
         $this->assertEquals(['ISO' => $expected], $range->__debugInfo());
     }
 
-    public function testReverse()
+    public function testReverse(): void
     {
         $this->assertEquals(
             UTCDateTimeRange::fromIncludedToIncluded(
@@ -221,7 +221,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testImpossibleReverse()
+    public function testImpossibleReverse(): void
     {
         $this->expectException(\DomainException::class);
         $this->expectExceptionMessage("can't reverse an open range");
@@ -237,7 +237,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testDirection()
+    public function testDirection(): void
     {
         $this->assertSame(
             UTCDateTimeRange::ASCENDING,
@@ -267,7 +267,7 @@ class UTCDateTimeRangeTest extends TestCase
     /**
      * @requires extension mongodb
      */
-    public function testToMongoDBQuery()
+    public function testToMongoDBQuery(): void
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('1985-05-21'),
@@ -283,7 +283,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public function testItCanGiveTheMaximumRange()
+    public function testItCanGiveTheMaximumRange(): void
     {
         $this->assertEquals(
             UTCDateTimeRange::fromIncludedToIncluded(
