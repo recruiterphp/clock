@@ -196,7 +196,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         [$usec, $sec] = explode(" ", $microtimeString);
         $usec = floatval($usec);
         if ($usec >= 1) {
-            throw new \Exception("usec parameter can’t be more than 1 second: {$usec}");
+            throw new \InvalidArgumentException("usec parameter can’t be more than 1 second: {$usec}");
         }
         return new self(intval($sec), intval($usec * 1000 * 1000));
     }
