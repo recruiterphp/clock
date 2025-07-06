@@ -5,23 +5,23 @@ use DomainException;
 
 final class UTCDateTimeRange
 {
-    const int LESS_THAN = 1;
-    const int LESS_THAN_EQUALS = 2;
+    private const int LESS_THAN = 1;
+    private const int LESS_THAN_EQUALS = 2;
 
-    const int ASCENDING = 1;
-    const int DESCENDING = 2;
+    public const int ASCENDING = 1;
+    public const int DESCENDING = 2;
 
-    public static function fromIncludedToExcluded(UTCDateTime $from, UTCDateTime $to)
+    public static function fromIncludedToExcluded(UTCDateTime $from, UTCDateTime $to): self
     {
         return new self($from, $to, self::LESS_THAN);
     }
 
-    public static function fromIncludedToIncluded(UTCDateTime $from, UTCDateTime $to)
+    public static function fromIncludedToIncluded(UTCDateTime $from, UTCDateTime $to): self
     {
         return new self($from, $to, self::LESS_THAN_EQUALS);
     }
 
-    public static function fromMinimumToMaximum()
+    public static function fromMinimumToMaximum(): self
     {
         return self::fromIncludedToIncluded(
             UTCDateTime::minimum(),
@@ -29,11 +29,14 @@ final class UTCDateTimeRange
         );
     }
 
-    private function __construct(private readonly UTCDateTime $from, private readonly UTCDateTime $to, private $toOperator)
-    {
+    private function __construct(
+        private readonly UTCDateTime $from,
+        private readonly UTCDateTime $to,
+        private readonly int $toOperator,
+    ) {
     }
 
-    public function toMongoDBQuery()
+    public function toMongoDBQuery(): array
     {
         return [
             '$gte' => $this->from->toMongoUTCDateTime(),
@@ -41,7 +44,7 @@ final class UTCDateTimeRange
         ];
     }
 
-    private function mongoOperator($toOperator)
+    private function mongoOperator(int $toOperator): string
     {
         switch ($toOperator) {
             case self::LESS_THAN:
@@ -49,9 +52,12 @@ final class UTCDateTimeRange
             case self::LESS_THAN_EQUALS:
                 return '$lte';
         }
+
+        // won't be reached, makes the type checker happy
+        return '';
     }
 
-    private function toOperatorParenthesis($toOperator)
+    private function toOperatorParenthesis(int $toOperator): string
     {
         switch ($toOperator) {
             case self::LESS_THAN:
@@ -59,54 +65,51 @@ final class UTCDateTimeRange
             case self::LESS_THAN_EQUALS:
                 return ']';
         }
+
+        // won't be reached, makes the type checker happy
+        return '';
     }
 
-    public function toMongoQueryOnField($fieldName)
+    public function toMongoQueryOnField(string $fieldName): array
     {
         return [$fieldName => $this->toMongoDBQuery()];
     }
 
-    /**
-     * @return UTCDateTime
-     */
-    public function from()
+    public function from(): UTCDateTime
     {
         return $this->from;
     }
 
-    /**
-     * @return UTCDateTime
-     */
-    public function to()
+    public function to(): UTCDateTime
     {
         return $this->to;
     }
 
-    public function toOperator()
+    public function toOperator(): int
     {
         return $this->toOperator;
     }
 
-    public function toApiFormat()
+    public function toApiFormat(): string
     {
         return sprintf('%s..%s', $this->from->toApiFormat(), $this->to->toApiFormat());
     }
 
-    public function iteratorOnHours($increment = 1)
+    public function iteratorOnHours($increment = 1): RangeIterator
     {
         return $this->generatorWith(
             fn($dateTime) => $dateTime->addHours($increment)
         );
     }
 
-    public function iterateOnDays($increment = 1)
+    public function iterateOnDays(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
             fn($dateTime) => $dateTime->addDays($increment)
         );
     }
 
-    public function iterateOnMonths($increment = 1)
+    public function iterateOnMonths(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
             fn($dateTime) => $dateTime->addMonths($increment)
@@ -124,7 +127,7 @@ final class UTCDateTimeRange
         return ['ISO' => $debug];
     }
 
-    public function reverse()
+    public function reverse(): self
     {
         if ($this->toOperator === self::LESS_THAN) {
             throw new DomainException("can't reverse an open range");
@@ -137,7 +140,7 @@ final class UTCDateTimeRange
         );
     }
 
-    public function direction()
+    public function direction(): int
     {
         if ($this->from->lessThanOrEqual($this->to)) {
             return self::ASCENDING;
@@ -146,7 +149,7 @@ final class UTCDateTimeRange
         }
     }
 
-    private function generatorWith(callable $incrementer)
+    private function generatorWith(\Closure $incrementer): RangeIterator
     {
         return new RangeIterator(
             $this->from,
@@ -156,12 +159,13 @@ final class UTCDateTimeRange
         );
     }
 
-    private function dateComparator()
+    private function dateComparator(): \Closure
     {
         switch ($this->toOperator) {
             case self::LESS_THAN:
                 return fn($x, $y) => $x < $y;
             case self::LESS_THAN_EQUALS:
+            default: // to make the type checker happy
                 return fn($x, $y) => $x <= $y;
         }
     }

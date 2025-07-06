@@ -129,7 +129,7 @@ class UTCDateTimeTest extends TestCase
         );
 
         $this->assertEquals(
-            UTCDateTime::fromFloat("1000000001.123"),
+            UTCDateTime::fromFloat(1000000001.123),
             UTCDateTime::fromMicrotime("0.123 1000000001")
         );
     }

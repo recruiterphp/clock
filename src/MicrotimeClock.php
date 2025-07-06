@@ -5,7 +5,6 @@ interface MicrotimeClock
 {
     /**
      * @see microtime()
-     * @return float
      */
-    public function current();
+    public function current(): float;
 }

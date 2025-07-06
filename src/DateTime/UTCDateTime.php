@@ -12,15 +12,10 @@ use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
 final class UTCDateTime implements JsonSerializable, \Stringable
 {
-    private $sec;
-    private $usec;
-
     const int MAX_SECS = 4294967296;
 
-    private function __construct($sec, $usec = 0)
+    private function __construct(private readonly int $sec, private readonly int $usec = 0)
     {
-        $this->sec = (int) $sec;
-        $this->usec = (int) $usec;
     }
 
     public function __toString(): string
@@ -35,7 +30,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public function toDateTime(DateTimeZone $timeZone = null)
+    public function toDateTime(DateTimeZone $timeZone = null): DateTime|false
     {
         if (is_null($timeZone)) {
             $timeZone = new DateTimeZone("UTC");
@@ -52,7 +47,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return $date;
     }
 
-    public function toDateTimeImmutable(DateTimeZone $timeZone = null)
+    public function toDateTimeImmutable(DateTimeZone $timeZone = null): DateTimeImmutable
     {
         return DateTimeImmutable::createFromMutable($this->toDateTime($timeZone));
     }
@@ -71,7 +66,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return $this->insertSubseconds($isoRepresentation, $this->usec, 6);
     }
 
-    private function insertSubseconds($isoRepresentation, $subseconds, $padding)
+    private function insertSubseconds(string $isoRepresentation, int $subseconds, int $padding): string
     {
         return str_replace(
             '+',
@@ -80,40 +75,40 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public function toIso8601()
+    public function toIso8601(): string
     {
         return $this->toDateTime()->format(DateTime::ISO8601);
     }
 
-    public function toIso8601Day()
+    public function toIso8601Day(): string
     {
         return $this->toDateTime()->format('Y-m-d');
     }
 
-    public function toCondensedIso8601()
+    public function toCondensedIso8601(): string
     {
         $roundedValue = round($this-> sec + ($this->usec / 1000 / 1000));
         return (new DateTime("@{$roundedValue}"))->format('YmdHis');
     }
 
-    public function toApiFormat()
+    public function toApiFormat(): string
     {
         return $this->toCondensedIso8601();
     }
 
-    public function sec()
+    public function sec(): int
     {
         return $this->sec;
     }
 
-    public function usec()
+    public function usec(): int
     {
         return $this->usec;
     }
 
     public static function box($dateToBox)
     {
-        if (is_null($dateToBox) || $dateToBox instanceof static) {
+        if (is_null($dateToBox) || $dateToBox instanceof self) {
             return $dateToBox;
         }
 
@@ -186,71 +181,71 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return self::fromString($string . ':00');
     }
 
-    public static function fromTimestamp($timestamp)
+    public static function fromTimestamp(int $timestamp): self
     {
         return new self($timestamp);
     }
 
-    public static function now()
+    public static function now(): self
     {
         return self::fromMicrotime(microtime());
     }
 
-    public static function fromMicrotime($microtimeString)
+    public static function fromMicrotime(string $microtimeString): self
     {
-        [$usec, $sec] = explode(" ", (string) $microtimeString);
+        [$usec, $sec] = explode(" ", $microtimeString);
         $usec = floatval($usec);
         if ($usec >= 1) {
             throw new \Exception("usec parameter can’t be more than 1 second: {$usec}");
         }
-        return new self($sec, $usec * 1000 * 1000);
+        return new self(intval($sec), intval($usec * 1000 * 1000));
     }
 
-    public static function fromFloat($timeInSeconds)
+    public static function fromFloat(float $timeInSeconds): self
     {
         $sec = floor($timeInSeconds);
         $usec = $timeInSeconds - $sec;
-        return new self($sec, $usec * 1000 * 1000);
+        return new self((int) $sec, intval($usec * 1000 * 1000));
     }
 
-    public static function fromZeroBasedDayOfYear($year, $days)
+    public static function fromZeroBasedDayOfYear(int $year, int $days): self
     {
         $d = DateTime::createFromFormat('Y-m-d H:i:s', "$year-01-01 00:00:00", new DateTimeZone("UTC"));
 
         return self::box($d)->addDays($days)->startOfDay();
     }
 
-    public static function fromOneBasedDayOfYear($year, $days)
+    public static function fromOneBasedDayOfYear($year, $days): self
     {
         return self::fromZeroBasedDayOfYear($year, $days - 1);
     }
 
-    public static function fromIso8601($formattedString)
+    public static function fromIso8601($formattedString): self
     {
         return self::fromString($formattedString);
     }
 
-    public static function fromApiFormat($formattedString)
+    public static function fromApiFormat($formattedString): self
     {
         return self::fromString($formattedString);
     }
 
-    public static function minimum()
+    public static function minimum(): self
     {
         return new self(0);
     }
 
-    public static function maximum()
+    public static function maximum(): self
     {
         return new self(self::MAX_SECS);
     }
 
-    public function subtractSeconds($seconds)
+    public function subtractSeconds($seconds): self
     {
         return $this->addSeconds(-$seconds);
     }
 
-    public function addSeconds($seconds)
+    public function addSeconds($seconds): self
     {
         if ($this->sec + $seconds > self::MAX_SECS) {
             $sec = self::MAX_SECS;
@@ -263,72 +258,72 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return new self($sec, $this->usec);
     }
 
-    public function add(DateInterval $interval)
+    public function add(DateInterval $interval): self
     {
         $newDateTime = $this->toDateTime();
         $newDateTime->add($interval);
         return self::box($newDateTime);
     }
 
-    public function addMonths($months)
+    public function addMonths($months): self
     {
         return $this->add(new DateInterval(sprintf('P%dM', $months)));
     }
 
-    public function subtractMonths($months)
+    public function subtractMonths($months): self
     {
         return $this->sub(new DateInterval(sprintf('P%dM', $months)));
     }
 
-    public function addDays($days)
+    public function addDays($days): self
     {
         return $this->add(new DateInterval(sprintf('P%dD', $days)));
     }
 
-    public function subtractDays($days)
+    public function subtractDays($days): self
     {
         return $this->sub(new DateInterval(sprintf('P%dD', $days)));
     }
 
-    public function addHours($hours)
+    public function addHours($hours): self
     {
         return $this->add(new DateInterval(sprintf('PT%dH', $hours)));
     }
 
-    public function subtractHours($hours)
+    public function subtractHours($hours): self
     {
         return $this->sub(new DateInterval(sprintf('PT%dH', $hours)));
     }
 
-    public function sub(DateInterval $interval)
+    public function sub(DateInterval $interval): self
     {
         $newDateTime = $this->toDateTime();
         $newDateTime->sub($interval);
         return self::box($newDateTime);
     }
 
-    public function startOfDay()
+    public function startOfDay(): self
     {
         $newDateTime = $this->toDateTime();
         $newDateTime->setTime(0, 0, 0);
         return self::box($newDateTime);
     }
 
-    public function endOfDay()
+    public function endOfDay(): self
     {
         $newDateTime = $this->toDateTime();
         $newDateTime->setTime(23, 59, 59);
         return self::box($newDateTime);
     }
 
-    public function startOfHour()
+    public function startOfHour(): self
     {
         $newDateTime = $this->toDateTime();
         $newDateTime->setTime($newDateTime->format('H'), 0, 0);
         return self::box($newDateTime);
     }
 
-    public function startOfNextHour()
+    public function startOfNextHour(): self
     {
         return $this
             ->add(new DateInterval('PT1H'))

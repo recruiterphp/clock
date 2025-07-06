@@ -2,15 +2,16 @@
 namespace Recruiter\Clock;
 
 use Recruiter\Clock;
+use Recruiter\DateTime\UTCDateTime;
 use Recruiter\UTCClock;
 
-class DelayedUTCClock implements UTCClock
+readonly class DelayedUTCClock implements UTCClock
 {
-    public function __construct(private readonly UTCClock $originalClock, private $delayInSeconds)
+    public function __construct(private UTCClock $originalClock, private int $delayInSeconds)
     {
     }
 
-    public function current()
+    public function current(): UTCDateTime
     {
         return $this
             ->originalClock

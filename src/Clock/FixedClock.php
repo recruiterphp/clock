@@ -5,7 +5,7 @@ use DateTime;
 
 class FixedClock implements Clock
 {
-    public static function fromIso8601($timeRepresentation)
+    public static function fromIso8601(string $timeRepresentation): self
     {
         return new self(new DateTime($timeRepresentation));
     }
@@ -14,15 +14,12 @@ class FixedClock implements Clock
     {
     }
 
-    /**
-     * @return DateTime
-     */
-    public function current()
+    public function current(): DateTime
     {
         return clone $this->time;
     }
 
-    public function nowIs(DateTime $time)
+    public function nowIs(DateTime $time): void
     {
         $this->time = $time;
     }

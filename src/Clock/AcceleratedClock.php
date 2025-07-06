@@ -4,21 +4,18 @@ use Recruiter\Clock;
 use DateTime;
 use DateInterval;
 
-class AcceleratedClock implements Clock
+readonly class AcceleratedClock implements Clock
 {
-    public function __construct(private readonly DateTime $time)
+    public function __construct(private DateTime $time)
     {
     }
 
-    /**
-     * @return DateTime
-     */
-    public function current()
+    public function current(): DateTime
     {
         return clone $this->time;
     }
 
-    public function advance(DateInterval $interval)
+    public function advance(DateInterval $interval): void
     {
         $this->time->add($interval);
     }

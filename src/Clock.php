@@ -5,8 +5,5 @@ use DateTime;
 
 interface Clock
 {
-    /**
-     * @return DateTime
-     */
-    public function current();
+    public function current(): DateTime;
 }
