@@ -12,14 +12,14 @@
         "rector/rector": "^2.1"
     },
     "autoload": {
-        "psr-0": {
+        "psr-4": {
             "Recruiter\\": "src/"
         }
     },
     "autoload-dev": {
-        "psr-0": {
+        "psr-4": {
             "Recruiter\\": [
-                "spec/unit/"
+                "tests/"
             ]
         }
     },
