@@ -14,7 +14,7 @@ class SettableUTCClockTest extends \PHPUnit\Framework\TestCase
         $this->clock = new SettableUTCClock($this->innerClock);
     }
 
-    public function testCurrentShouldReturnStubbedTime()
+    public function testCurrentShouldReturnStubbedTime(): void
     {
         $time = UTCDateTime::box('2015-02-01 10:00');
         $this->clock->setCurrent($time);
@@ -25,7 +25,7 @@ class SettableUTCClockTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testCurrentShouldBeAskedToInnerClockIfNotSet()
+    public function testCurrentShouldBeAskedToInnerClockIfNotSet(): void
     {
         $time = UTCDateTime::box('2015-02-01 10:00');
 
@@ -41,7 +41,7 @@ class SettableUTCClockTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testStubbedTimeCanBeReset()
+    public function testStubbedTimeCanBeReset(): void
     {
         $time = UTCDateTime::box('2015-02-01 10:00');
 

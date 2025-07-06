@@ -29,7 +29,7 @@ final class UTCDateTimeRange
         );
     }
 
-    private function __construct(private UTCDateTime $from, private UTCDateTime $to, private $toOperator)
+    private function __construct(private readonly UTCDateTime $from, private readonly UTCDateTime $to, private $toOperator)
     {
     }
 

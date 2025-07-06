@@ -9,7 +9,7 @@ use Recruiter\UTCClock;
 #[CoversClass(DelayedUTCClock::class)]
 class DelayedUTCClockTest extends TestCase
 {
-    public function testGivesATimeAFewSecondsInThePast()
+    public function testGivesATimeAFewSecondsInThePast(): void
     {
         $original = $this->createMock(UTCClock::class);
         $clock = new DelayedUTCClock($original, 10);
