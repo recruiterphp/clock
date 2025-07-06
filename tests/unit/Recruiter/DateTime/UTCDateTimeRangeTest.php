@@ -59,9 +59,7 @@ class UTCDateTimeRangeTest extends PHPUnit_Framework_TestCase
                     '$lte' => '2015-05-21 00',
                 ]
             ],
-            $range->toMongoQueryOnField('goofy', function(UTCDateTime $date) {
-                return $date->toDateTime()->format('Y-m-d H');
-            })
+            $range->toMongoQueryOnField('goofy', fn(UTCDateTime $date) => $date->toDateTime()->format('Y-m-d H'))
         );
     }
 
@@ -93,9 +91,7 @@ class UTCDateTimeRangeTest extends PHPUnit_Framework_TestCase
             UTCDateTime::box('2015-05-21 12:00')
         );
 
-        $callback = function (UTCDateTime $date) {
-            return $date->toDateTime()->format('Y-m-d H');
-        };
+        $callback = (fn(UTCDateTime $date) => $date->toDateTime()->format('Y-m-d H'));
 
         $this->assertEquals(
             [

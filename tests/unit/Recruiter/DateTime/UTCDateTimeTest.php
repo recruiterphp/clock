@@ -163,7 +163,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
             Generator\choose(0, 364),
             Generator\choose(0, 364)
         )
-            ->then(function ($year, $dayOfYear, $anotherDayOfYear) {
+            ->then(function ($year, $dayOfYear, $anotherDayOfYear): void {
                 $day = UTCDateTime::fromZeroBasedDayOfYear($year, $dayOfYear);
                 $anotherDay = UTCDateTime::fromZeroBasedDayOfYear($year, $anotherDayOfYear);
                 $this->assertEquals(
@@ -182,7 +182,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
             Generator\choose(1, 365),
             Generator\choose(1, 365)
         )
-            ->then(function ($year, $dayOfYear, $anotherDayOfYear) {
+            ->then(function ($year, $dayOfYear, $anotherDayOfYear): void {
                 $day = UTCDateTime::fromOneBasedDayOfYear($year, $dayOfYear);
                 $anotherDay = UTCDateTime::fromOneBasedDayOfYear($year, $anotherDayOfYear);
                 $this->assertEquals(
@@ -442,7 +442,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
     {
         $this
             ->forAll(Generator\nat())
-            ->then(function ($months) {
+            ->then(function ($months): void {
                 $date = UTCDateTime::fromString('2000-01-03 00:00:00');
 
                 $addSub = $date->addMonths($months)->subtractMonths($months);
@@ -624,7 +624,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
                     new DateTime('2020-12-31')
                 )
             )
-            ->then(function ($days, $datetime) {
+            ->then(function ($days, $datetime): void {
                 $date = UTCDateTime::box($datetime);
 
                 $addDiff = $date->addDays($days)->diff($date)->days;
@@ -653,7 +653,7 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
                     new DateTime('2020-12-31')
                 )
             )
-            ->then(function (DateTime $date) {
+            ->then(function (DateTime $date): void {
                 $date->setTimeZone(new DateTimeZone('UTC'));
                 $prefix = $date->format('Y-m');
 

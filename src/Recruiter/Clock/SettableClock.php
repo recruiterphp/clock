@@ -7,11 +7,8 @@ use Recruiter\Clock;
 
 class SettableClock implements Clock
 {
-    private $current;
-    
-    public function __construct(DateTime $current)
+    public function __construct(private readonly DateTime $current)
     {
-        $this->current = $current;
     }
 
     public function advance($seconds)

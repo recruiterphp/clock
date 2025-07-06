@@ -6,13 +6,11 @@ use Recruiter\StopWatch;
 
 class ClockStopWatch implements StopWatch
 {
-    private $clock;
     private $start;
     private $elapsed;
 
-    public function __construct(Clock $clock)
+    public function __construct(private readonly Clock $clock)
     {
-        $this->clock = $clock;
     }
 
     public function start()

@@ -6,13 +6,11 @@ use Recruiter\StopWatch;
 
 class MicrotimeClockStopWatch implements StopWatch
 {
-    private $clock;
     private $start;
     private $elapsed;
 
-    public function __construct(MicrotimeClock $clock)
+    public function __construct(private readonly MicrotimeClock $clock)
     {
-        $this->clock = $clock;
     }
 
     public function start()

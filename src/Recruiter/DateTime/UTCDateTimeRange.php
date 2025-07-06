@@ -5,16 +5,13 @@ use DomainException;
 
 final class UTCDateTimeRange
 {
-    private $from;
-    private $to;
-    private $toOperator;
     private $defaultFormatter;
 
-    const LESS_THAN = 1;
-    const LESS_THAN_EQUALS = 2;
+    const int LESS_THAN = 1;
+    const int LESS_THAN_EQUALS = 2;
 
-    const ASCENDING = 1;
-    const DESCENDING = 2;
+    const int ASCENDING = 1;
+    const int DESCENDING = 2;
 
     public static function fromIncludedToExcluded(UTCDateTime $from, UTCDateTime $to)
     {
@@ -34,14 +31,9 @@ final class UTCDateTimeRange
         );
     }
 
-    private function __construct($from, $to, $toOperator)
+    private function __construct(private $from, private $to, private $toOperator)
     {
-        $this->from = $from;
-        $this->to = $to;
-        $this->toOperator = $toOperator;
-        $this->defaultFormatter = function (UTCDateTime $date) {
-            return $date->toMongoUTCDateTime();
-        };
+        $this->defaultFormatter = (fn(UTCDateTime $date) => $date->toMongoUTCDateTime());
     }
 
     public function toMongoQuery(callable $formatter = null)
@@ -56,9 +48,7 @@ final class UTCDateTimeRange
 
     public function toMongoDBQuery()
     {
-        return $this->toMongoQuery(function ($date) {
-            return $date->toMongoUTCDateTime();
-        });
+        return $this->toMongoQuery(fn($date) => $date->toMongoUTCDateTime());
     }
 
     private function mongoOperator($toOperator)
@@ -115,27 +105,21 @@ final class UTCDateTimeRange
     public function iteratorOnHours($increment = 1)
     {
         return $this->generatorWith(
-            function ($dateTime) use ($increment) {
-                return $dateTime->addHours($increment);
-            }
+            fn($dateTime) => $dateTime->addHours($increment)
         );
     }
 
     public function iterateOnDays($increment = 1)
     {
         return $this->generatorWith(
-            function ($dateTime) use ($increment) {
-                return $dateTime->addDays($increment);
-            }
+            fn($dateTime) => $dateTime->addDays($increment)
         );
     }
 
     public function iterateOnMonths($increment = 1)
     {
         return $this->generatorWith(
-            function ($dateTime) use ($increment) {
-                return $dateTime->addMonths($increment);
-            }
+            fn($dateTime) => $dateTime->addMonths($increment)
         );
     }
 
@@ -186,13 +170,9 @@ final class UTCDateTimeRange
     {
         switch ($this->toOperator) {
             case self::LESS_THAN:
-                return function ($x, $y) {
-                    return $x < $y;
-                };
+                return fn($x, $y) => $x < $y;
             case self::LESS_THAN_EQUALS:
-                return function ($x, $y) {
-                    return $x <= $y;
-                };
+                return fn($x, $y) => $x <= $y;
         }
     }
 }

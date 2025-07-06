@@ -6,13 +6,8 @@ use Recruiter\UTCClock;
 
 class DelayedUTCClock implements UTCClock
 {
-    private $originalClock;
-    private $delayInSeconds;
-
-    public function __construct(UTCClock $originalClock, $delayInSeconds)
+    public function __construct(private readonly UTCClock $originalClock, private $delayInSeconds)
     {
-        $this->originalClock = $originalClock;
-        $this->delayInSeconds = $delayInSeconds;
     }
 
     public function current()

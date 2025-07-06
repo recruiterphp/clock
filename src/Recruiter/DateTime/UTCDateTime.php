@@ -10,12 +10,12 @@ use InvalidArgumentException;
 use JsonSerializable;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
-final class UTCDateTime implements JsonSerializable
+final class UTCDateTime implements JsonSerializable, \Stringable
 {
     private $sec;
     private $usec;
 
-    const MAX_SECS = 4294967296;
+    const int MAX_SECS = 4294967296;
 
     private function __construct($sec, $usec = 0)
     {
@@ -23,7 +23,7 @@ final class UTCDateTime implements JsonSerializable
         $this->usec = (int) $usec;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->sec . ' ' . $this->usec;
     }
@@ -147,13 +147,13 @@ final class UTCDateTime implements JsonSerializable
 
     public static function fromStringAndtimezone($string, DateTimeZone $timeZone)
     {
-        $pieces = explode('.', $string);
+        $pieces = explode('.', (string) $string);
 
         switch (count($pieces)) {
             case 1:
                 return self::box(new DateTime($string, $timeZone));
             case 2:
-                list($dateTime, $fractional) = $pieces;
+                [$dateTime, $fractional] = $pieces;
                 $padded = str_pad($fractional, 6, '0', STR_PAD_RIGHT);
 
                 return self::box(new DateTime($dateTime, $timeZone))
@@ -172,7 +172,7 @@ final class UTCDateTime implements JsonSerializable
 
     public static function fromHourlyPrecision($string)
     {
-        if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}$/', $string)) {
+        if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}$/', (string) $string)) {
             throw new InvalidArgumentException(
                 sprintf(
                     '%s is not a valid hourly precision string',
@@ -196,7 +196,7 @@ final class UTCDateTime implements JsonSerializable
 
     public static function fromMicrotime($microtimeString)
     {
-        list($usec, $sec) = explode(" ", $microtimeString);
+        [$usec, $sec] = explode(" ", (string) $microtimeString);
         $usec = floatval($usec);
         if ($usec >= 1) {
             throw new \Exception("usec parameter can’t be more than 1 second: {$usec}");

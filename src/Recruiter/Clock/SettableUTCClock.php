@@ -8,11 +8,8 @@ class SettableUTCClock implements UTCClock
 {
     private $fixed;
 
-    private $innerClock;
-
-    public function __construct(UTCClock $innerClock)
+    public function __construct(private readonly UTCClock $innerClock)
     {
-        $this->innerClock = $innerClock;
     }
 
     public function current()

@@ -6,11 +6,8 @@ use DateInterval;
 
 class AcceleratedClock implements Clock
 {
-    private $time;
-
-    public function __construct(DateTime $time)
+    public function __construct(private readonly DateTime $time)
     {
-        $this->time = $time;
     }
 
     /**
