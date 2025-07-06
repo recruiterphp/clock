@@ -244,9 +244,6 @@ class UTCDateTimeTest extends TestCase
         );
     }
 
-    /**
-     * @requires extension mongo
-     */
     public function testCanAddSeconds()
     {
         $this->assertEquals(
