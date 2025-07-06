@@ -38,8 +38,8 @@ class ClockStopWatchTest extends TestCase
         $this->stopWatch->start();
         $this->clock->nowIs(new DateTime('2015-02-03 00:12:49'));
 
-        $this->assertEquals(6.0, $this->stopWatch->elapsedSeconds(), '', 0.1);
-        $this->assertEquals(6000.0, $this->stopWatch->elapsedMilliseconds(), '', 0.1);
-        $this->assertEquals(6000000.0, $this->stopWatch->elapsedMicroseconds(), '', 0.1);
+        $this->assertEqualsWithDelta(6.0, $this->stopWatch->elapsedSeconds(), 0.1);
+        $this->assertEqualsWithDelta(6000.0, $this->stopWatch->elapsedMilliseconds(), 0.1);
+        $this->assertEqualsWithDelta(6000000.0, $this->stopWatch->elapsedMicroseconds(), 0.1);
     }
 }

@@ -41,7 +41,7 @@ class UTCDateTimeTest extends TestCase
         $output = $dateTime->toDateTime();
 
         $this->assertEquals($date->getTimestamp(), $output->getTimestamp());
-        $this->assertEquals($date, $output, '');
+        $this->assertEquals($date, $output);
     }
 
     public function testTimestampIsNotAffectedByTimezone(): void
@@ -52,7 +52,7 @@ class UTCDateTimeTest extends TestCase
         $output = $dateTime->toDateTime(new DateTimeZone('Europe/Rome'));
 
         $this->assertEquals($date->getTimestamp(), $output->getTimestamp());
-        $this->assertEquals($date, $output, '');
+        $this->assertEquals($date, $output);
     }
 
     public function testUnboxingToDateTimeImmutable(): void

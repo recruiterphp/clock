@@ -37,8 +37,8 @@ class MicrotimeClockStopWatchTest extends TestCase
         $this->stopWatch->start();
         $this->clock->nowIs(98.987653);
 
-        $this->assertEquals(53.864197, $this->stopWatch->elapsedSeconds(), '', 0.000001);
-        $this->assertEquals(53864.197, $this->stopWatch->elapsedMilliseconds(), '', 0.001);
-        $this->assertEquals(53864197, $this->stopWatch->elapsedMicroseconds(), '', 1);
+        $this->assertEqualsWithDelta(53.864197, $this->stopWatch->elapsedSeconds(), 0.000001);
+        $this->assertEqualsWithDelta(53864.197, $this->stopWatch->elapsedMilliseconds(), 0.001);
+        $this->assertEqualsWithDelta(53864197, $this->stopWatch->elapsedMicroseconds(), 1);
     }
 }
