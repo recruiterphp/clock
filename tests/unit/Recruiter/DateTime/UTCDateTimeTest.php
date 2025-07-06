@@ -8,8 +8,10 @@ use DateTimeZone;
 use Eris;
 use Eris\Generator;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(UTCDateTime::class)]
 class UTCDateTimeTest extends TestCase
 {
     use Eris\TestTrait;

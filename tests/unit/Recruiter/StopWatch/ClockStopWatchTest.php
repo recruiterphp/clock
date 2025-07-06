@@ -2,9 +2,11 @@
 namespace Recruiter\StopWatch;
 
 use DateTime;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Recruiter\Clock\FixedClock;
 
+#[CoversClass(ClockStopWatch::class)]
 class ClockStopWatchTest extends TestCase
 {
     protected function setUp(): void

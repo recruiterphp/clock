@@ -1,10 +1,12 @@
 <?php
 namespace Recruiter\Clock;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Recruiter\DateTime\UTCDateTime;
 use Recruiter\UTCClock;
 
+#[CoversClass(DelayedUTCClock::class)]
 class DelayedUTCClockTest extends TestCase
 {
     public function testGivesATimeAFewSecondsInThePast()
