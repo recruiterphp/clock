@@ -2,6 +2,7 @@
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Recruiter\DateTime\UTCDateTime;
 use Recruiter\UTCClock;
@@ -9,6 +10,9 @@ use Recruiter\UTCClock;
 #[CoversClass(DelayedUTCClock::class)]
 class DelayedUTCClockTest extends TestCase
 {
+    /**
+     * @throws Exception
+     */
     public function testGivesATimeAFewSecondsInThePast(): void
     {
         $original = $this->createMock(UTCClock::class);
