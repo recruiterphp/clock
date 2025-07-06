@@ -1,37 +1,32 @@
 <?php
 namespace Recruiter\StopWatch;
 
+use PHPUnit\Framework\TestCase;
 use Recruiter\Clock\FixedMicrotimeClock;
 
-class MicrotimeClockStopWatchTest extends \PHPUnit_Framework_TestCase
+class MicrotimeClockStopWatchTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->clock = new FixedMicrotimeClock(45.123456);
         $this->stopWatch = new MicrotimeClockStopWatch($this->clock);
     }
 
-    /**
-     * @expectedException Recruiter\StopWatch\StopWatchNotStartedException
-     */
     public function testElapsedSecondsWithoutStarting()
     {
+        $this->expectException(StopWatchNotStartedException::class);
         $this->stopWatch->elapsedSeconds();
     }
 
-    /**
-     * @expectedException Recruiter\StopWatch\StopWatchNotStartedException
-     */
     public function testElapsedMillisecondsWithoutStarting()
     {
+        $this->expectException(StopWatchNotStartedException::class);
         $this->stopWatch->elapsedMilliseconds();
     }
 
-    /**
-     * @expectedException Recruiter\StopWatch\StopWatchNotStartedException
-     */
     public function testElapsedMicrosecondsWithoutStarting()
     {
+        $this->expectException(StopWatchNotStartedException::class);
         $this->stopWatch->elapsedMicroseconds();
     }
 

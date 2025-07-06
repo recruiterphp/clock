@@ -40,9 +40,10 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         if (is_null($timeZone)) {
             $timeZone = new DateTimeZone("UTC");
         }
+        $timestamp = $this->sec . '.' . str_pad($this->usec, 6, '0', STR_PAD_LEFT);
         $date = DateTime::createFromFormat(
-            "U",
-            $this->sec
+            "U.u",
+            $timestamp
         );
         if ($date) {
             $date->setTimeZone($timeZone);
@@ -141,7 +142,8 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         $clonedDateToBox = clone $dateToBox;
 
         if ($clonedDateToBox instanceof DateTimeInterface) {
-            return new self($clonedDateToBox->getTimestamp(), 0);
+            $usec = (int) $clonedDateToBox->format('u');
+            return new self($clonedDateToBox->getTimestamp(), $usec);
         }
     }
 
