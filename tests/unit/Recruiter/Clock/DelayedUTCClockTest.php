@@ -1,13 +1,15 @@
 <?php
 namespace Recruiter\Clock;
 
+use PHPUnit\Framework\TestCase;
 use Recruiter\DateTime\UTCDateTime;
+use Recruiter\UTCClock;
 
-class DelayedUTCClockTest extends \PHPUnit_Framework_TestCase
+class DelayedUTCClockTest extends TestCase
 {
     public function testGivesATimeAFewSecondsInThePast()
     {
-        $original = $this->getMock(\Recruiter\UTCClock::class);
+        $original = $this->createMock(UTCClock::class);
         $clock = new DelayedUTCClock($original, 10);
 
         $original->expects($this->once())

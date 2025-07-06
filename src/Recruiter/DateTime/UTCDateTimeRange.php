@@ -5,8 +5,6 @@ use DomainException;
 
 final class UTCDateTimeRange
 {
-    private $defaultFormatter;
-
     const int LESS_THAN = 1;
     const int LESS_THAN_EQUALS = 2;
 
@@ -31,24 +29,16 @@ final class UTCDateTimeRange
         );
     }
 
-    private function __construct(private $from, private $to, private $toOperator)
+    private function __construct(private UTCDateTime $from, private UTCDateTime $to, private $toOperator)
     {
-        $this->defaultFormatter = (fn(UTCDateTime $date) => $date->toMongoUTCDateTime());
-    }
-
-    public function toMongoQuery(callable $formatter = null)
-    {
-        $formatter = $formatter ?: $this->defaultFormatter;
-
-        return [
-            '$gte' => $formatter($this->from),
-            $this->mongoOperator($this->toOperator) => $formatter($this->to),
-        ];
     }
 
     public function toMongoDBQuery()
     {
-        return $this->toMongoQuery(fn($date) => $date->toMongoUTCDateTime());
+        return [
+            '$gte' => $this->from->toMongoUTCDateTime(),
+            $this->mongoOperator($this->toOperator) => $this->to->toMongoUTCDateTime(),
+        ];
     }
 
     private function mongoOperator($toOperator)
@@ -71,9 +61,9 @@ final class UTCDateTimeRange
         }
     }
 
-    public function toMongoQueryOnField($fieldName, callable $formatter = null)
+    public function toMongoQueryOnField($fieldName)
     {
-        return [$fieldName => $this->toMongoQuery($formatter)];
+        return [$fieldName => $this->toMongoDBQuery()];
     }
 
     /**

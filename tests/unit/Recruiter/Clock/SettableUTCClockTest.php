@@ -2,12 +2,13 @@
 namespace Recruiter\Clock;
 
 use Recruiter\DateTime\UTCDateTime;
+use Recruiter\UTCClock;
 
-class SettableUTCClockTest extends \PHPUnit_Framework_TestCase
+class SettableUTCClockTest extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->innerClock = $this->getMock(\Recruiter\UTCClock::class);
+        $this->innerClock = $this->createMock(UTCClock::class);
         $this->clock = new SettableUTCClock($this->innerClock);
     }
 

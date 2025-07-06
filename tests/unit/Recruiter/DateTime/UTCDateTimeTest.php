@@ -8,9 +8,9 @@ use DateTimeZone;
 use Eris;
 use Eris\Generator;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class UTCDateTimeTest extends PHPUnit_Framework_TestCase
+class UTCDateTimeTest extends TestCase
 {
     use Eris\TestTrait;
 
@@ -66,12 +66,10 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         $this->assertNull(UTCDateTime::box(null));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage false is not a valid value to box
-     */
     public function testBoxingNonObjectNorNullThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('false is not a valid value to box');
         UTCDateTime::box(false);
     }
 
@@ -121,13 +119,10 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         $this->assertNotNull(UTCDateTime::now());
     }
 
-    /**
-     * @requires extension mongo
-     */
     public function testPrecisionIsMaintainedwhenCreatedFromAMicrotimeString()
     {
         $this->assertEquals(
-            UTCDateTime::box(new MongoDate(1000, 123000)),
+            UTCDateTime::box(new MongoUTCDateTime(1000123)),
             UTCDateTime::fromMicrotime('0.123000 1000')
         );
 
@@ -137,22 +132,17 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testOverflowingMicrotimeString()
     {
+        $this->expectException(\Exception::class);
         UTCDateTime::fromMicrotime('1 1000');
     }
 
-    /**
-     * @requires extension mongo
-     */
     public function testFromIso8601FactoryMethod()
     {
         $this->assertEquals(
-            new MongoDate(1401624000, 0),
-            UTCDateTime::fromIso8601('2014-06-01T12:00:00+0000')->toMongoDate()
+            new MongoUTCDateTime(1401624000000),
+            UTCDateTime::fromIso8601('2014-06-01T12:00:00+0000')->toMongoUTCDateTime()
         );
     }
 
@@ -234,28 +224,23 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @requires extension mongo
-     */
     public function testPrecisionIsKeptEvenDuringSubtractionOfSecondsOperation()
     {
         $this->assertEquals(
-            UTCDateTime::box(new MongoDate(1000, 123000))->subtractSeconds(15),
-            UTCDateTime::box(new MongoDate(985, 123000))
+            UTCDateTime::box(new MongoUTCDateTime(985123)),
+            UTCDateTime::box(new MongoUTCDateTime(1000123))->subtractSeconds(15)
         );
     }
 
-    /**
-     * @requires extension mongo
-     */
     public function testPrecisionIsKeptEvenDuringDifferenceOfTimesOperation()
     {
-        $this->assertEquals(
+        $this->assertEqualsWithDelta(
             14.6,
-            UTCDateTime::box(new MongoDate(1000, 123000))
+            UTCDateTime::box(new MongoUTCDateTime(1000123))
                 ->differenceInSeconds(
-                    UTCDateTime::box(new MongoDate(985, 523000))
-                )
+                    UTCDateTime::box(new MongoUTCDateTime(985523))
+                ),
+            1e-10,
         );
     }
 
@@ -265,8 +250,8 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
     public function testCanAddSeconds()
     {
         $this->assertEquals(
-            UTCDateTime::box(new MongoDate(1000, 123000)),
-            UTCDateTime::box(new MongoDate(985, 123000))->addSeconds(15)
+            UTCDateTime::box(new MongoUTCDateTime(1000123)),
+            UTCDateTime::box(new MongoUTCDateTime(985123))->addSeconds(15)
         );
     }
 
@@ -540,12 +525,10 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, UTCDateTime::fromHourlyPrecision($date));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage '2015-02-02 03:10' is not a valid hourly precision string
-     */
     public function testWrongHourlyPrecisionFormatThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("'2015-02-02 03:10' is not a valid hourly precision string");
         UTCDateTime::fromHourlyPrecision('2015-02-02 03:10');
     }
 
@@ -579,22 +562,18 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage usecs must be within 0 and 999999, got 1000000
-     */
     public function testUsecGreaterThanRange()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('usecs must be within 0 and 999999, got 1000000');
         UTCDateTime::box('2015-01-01')
             ->withUsec(1000000);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage usecs must be within 0 and 999999, got -1
-     */
     public function testUsecLessThenRange()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('usecs must be within 0 and 999999, got -1');
         UTCDateTime::box('2015-01-01')
             ->withUsec(-1);
     }
@@ -688,20 +667,16 @@ class UTCDateTimeTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage expected ISO8601 with/without one fractional part separated by dot, got '2016-01-26 09:34:02.123.143'
-     */
     public function testBoxingFractionalSecondsFormatErrors()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("expected ISO8601 with/without one fractional part separated by dot, got '2016-01-26 09:34:02.123.143'");
         UTCDateTime::box('2016-01-26 09:34:02.123.143');
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function testBoxingFractionalSecondsGreaterThanRange()
     {
+        $this->expectException(\InvalidArgumentException::class);
         UTCDateTime::box('2016-01-26 09:34:02.1234567');
     }
 

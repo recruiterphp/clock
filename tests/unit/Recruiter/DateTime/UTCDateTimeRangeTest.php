@@ -1,15 +1,12 @@
 <?php
 namespace Recruiter\DateTime;
 
-use MongoDate;
 use MongoDB;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
-class UTCDateTimeRangeTest extends PHPUnit_Framework_TestCase
+class UTCDateTimeRangeTest extends TestCase
 {
-    /**
-     * @requires extension mongo
-     */
     public function testItCanBuildAClosedInterval()
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
@@ -19,16 +16,13 @@ class UTCDateTimeRangeTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                '$gte' => new MongoDate(485481600),
-                '$lte' => new MongoDate(1432166400),
+                '$gte' => new MongoUTCDateTime(485481600000),
+                '$lte' => new MongoUTCDateTime(1432166400000),
             ],
-            $range->toMongoQuery()
+            $range->toMongoDBQuery()
         );
     }
 
-    /**
-     * @requires extension mongo
-     */
     public function testItCanBuildARightOpenInterval()
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
@@ -38,34 +32,13 @@ class UTCDateTimeRangeTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                '$gte' => new MongoDate(485481600),
-                '$lt' => new MongoDate(1432166400),
+                '$gte' => new MongoUTCDateTime(485481600000),
+                '$lt' => new MongoUTCDateTime(1432166400000),
             ],
-            $range->toMongoQuery()
+            $range->toMongoDBQuery()
         );
     }
 
-    public function testToMongoQueryOnFieldCanUseACallbackFormatter()
-    {
-        $range = UTCDateTimeRange::fromIncludedToIncluded(
-            UTCDateTime::box('1985-05-21'),
-            UTCDateTime::box('2015-05-21')
-        );
-
-        $this->assertEquals(
-            [
-                'goofy' => [
-                    '$gte' => '1985-05-21 00',
-                    '$lte' => '2015-05-21 00',
-                ]
-            ],
-            $range->toMongoQueryOnField('goofy', fn(UTCDateTime $date) => $date->toDateTime()->format('Y-m-d H'))
-        );
-    }
-
-    /**
-     * @requires extension mongo
-     */
     public function testToMongoQueryOnFieldShouldReturnTheSameQueryTheNotParameterizedVersion()
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
@@ -76,29 +49,11 @@ class UTCDateTimeRangeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             [
                 'goofy' => [
-                    '$gte' => new MongoDate(485481600),
-                    '$lte' => new MongoDate(1432166400),
+                    '$gte' => new MongoUTCDateTime(485481600000),
+                    '$lte' => new MongoUTCDateTime(1432166400000),
                 ]
             ],
             $range->toMongoQueryOnField('goofy')
-        );
-    }
-
-    public function testItCanBeFormattedWithACallback()
-    {
-        $range = UTCDateTimeRange::fromIncludedToExcluded(
-            UTCDateTime::box('1985-05-21 10:00'),
-            UTCDateTime::box('2015-05-21 12:00')
-        );
-
-        $callback = (fn(UTCDateTime $date) => $date->toDateTime()->format('Y-m-d H'));
-
-        $this->assertEquals(
-            [
-                '$gte' => '1985-05-21 10',
-                '$lt' => '2015-05-21 12',
-            ],
-            $range->toMongoQuery($callback)
         );
     }
 
@@ -264,12 +219,10 @@ class UTCDateTimeRangeTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException DomainException
-     * @expectedExceptionMessage can't reverse an open range
-     */
     public function testImpossibleReverse()
     {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage("can't reverse an open range");
         $this->assertEquals(
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
