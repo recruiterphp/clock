@@ -29,7 +29,7 @@ class UTCDateTimeTest extends TestCase
 
         $output = $dateTime->toDateTime();
         $this->assertEquals($date->getTimestamp(), $output->getTimestamp());
-        $this->assertEquals($date, $output, '', 1);
+        $this->assertEquals($date, $output);
     }
 
     public function testBoxingDateTimeImmutable()
