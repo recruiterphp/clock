@@ -4,11 +4,8 @@ use Recruiter\MicrotimeClock;
 
 class FixedMicrotimeClock implements MicrotimeClock
 {
-    private $microseconds;
-
-    public function __construct($microseconds)
+    public function __construct(private $microseconds)
     {
-        $this->microseconds = $microseconds;
     }
 
     /**

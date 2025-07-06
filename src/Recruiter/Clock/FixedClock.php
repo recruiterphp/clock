@@ -5,16 +5,13 @@ use DateTime;
 
 class FixedClock implements Clock
 {
-    private $time;
-
     public static function fromIso8601($timeRepresentation)
     {
         return new self(new DateTime($timeRepresentation));
     }
 
-    public function __construct(DateTime $time)
+    public function __construct(private DateTime $time)
     {
-        $this->time = $time;
     }
 
     /**

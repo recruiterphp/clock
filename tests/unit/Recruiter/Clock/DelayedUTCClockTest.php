@@ -7,7 +7,7 @@ class DelayedUTCClockTest extends \PHPUnit_Framework_TestCase
 {
     public function testGivesATimeAFewSecondsInThePast()
     {
-        $original = $this->getMock('Recruiter\UTCClock');
+        $original = $this->getMock(\Recruiter\UTCClock::class);
         $clock = new DelayedUTCClock($original, 10);
 
         $original->expects($this->once())

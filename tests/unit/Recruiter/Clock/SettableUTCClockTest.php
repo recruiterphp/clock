@@ -7,7 +7,7 @@ class SettableUTCClockTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->innerClock = $this->getMock('Recruiter\UTCClock');
+        $this->innerClock = $this->getMock(\Recruiter\UTCClock::class);
         $this->clock = new SettableUTCClock($this->innerClock);
     }
 

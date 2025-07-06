@@ -3,18 +3,14 @@ namespace Recruiter\DateTime;
 
 class RangeIterator implements \Iterator
 {
-    private $from;
-    private $to;
     private $comparator;
     private $incrementer;
     private $index;
 
     private $current;
 
-    public function __construct($from, $to, callable $comparator, callable $incrementer)
+    public function __construct(private $from, private $to, callable $comparator, callable $incrementer)
     {
-        $this->from = $from;
-        $this->to = $to;
         $this->comparator = $comparator;
         $this->incrementer = $incrementer;
 
