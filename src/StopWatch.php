@@ -6,20 +6,17 @@ interface StopWatch
     public function start();
 
     /**
-     * @return float
      * @throws \Recruiter\StopWatch\StopWatchNotStartedException
      */
-    public function elapsedSeconds();
+    public function elapsedSeconds(): float;
 
     /**
-     * @return float
      * @throws \Recruiter\StopWatch\StopWatchNotStartedException
      */
-    public function elapsedMilliseconds();
+    public function elapsedMilliseconds(): float;
 
     /**
-     * @return float
      * @throws \Recruiter\StopWatch\StopWatchNotStartedException
      */
-    public function elapsedMicroseconds();
+    public function elapsedMicroseconds(): float;
 }

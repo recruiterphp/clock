@@ -5,8 +5,5 @@ use Recruiter\DateTime\UTCDateTime;
 
 interface UTCClock
 {
-    /**
-     * @return UTCDateTime
-     */
-    public function current();
+    public function current(): UTCDateTime;
 }

@@ -6,8 +6,8 @@ use DateInterval;
 
 class ProgressiveClock implements Clock
 {
-    private $current;
-    private $defaultInterval;
+    private ?DateTime $current;
+    private DateInterval $defaultInterval;
 
     public function __construct(DateTime $start = null, DateInterval $defaultInterval = null)
     {
@@ -23,14 +23,14 @@ class ProgressiveClock implements Clock
         }
     }
 
-    public function current()
+    public function current(): DateTime
     {
         $toReturn = clone $this->current;
         $this->current->add($this->defaultInterval);
         return $toReturn;
     }
 
-    public function forwardInTime(DateInterval $interval)
+    public function forwardInTime(DateInterval $interval): static
     {
         $this->current->add($interval);
         return $this;

@@ -11,12 +11,12 @@ class SettableClock implements Clock
     {
     }
 
-    public function advance($seconds)
+    public function advance($seconds): void
     {
         $this->current->add(new DateInterval("PT{$seconds}S"));
     }
 
-    public function current()
+    public function current(): DateTime
     {
         return $this->current;
     }

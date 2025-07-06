@@ -3,26 +3,24 @@ namespace Recruiter\DateTime;
 
 class RangeIterator implements \Iterator
 {
-    private $comparator;
-    private $incrementer;
-    private $index;
+    private int $index;
+    private UTCDateTime $current;
 
-    private $current;
-
-    public function __construct(private $from, private $to, callable $comparator, callable $incrementer)
-    {
-        $this->comparator = $comparator;
-        $this->incrementer = $incrementer;
-
+    public function __construct(
+        private readonly UTCDateTime $from,
+        private readonly UTCDateTime $to,
+        private readonly \Closure $comparator,
+        private readonly \Closure $incrementer
+    ) {
         $this->rewind();
     }
 
-    public function current(): mixed
+    public function current(): UTCDateTime
     {
         return $this->current;
     }
 
-    public function key(): mixed
+    public function key(): int
     {
         return $this->index;
     }

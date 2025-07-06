@@ -6,22 +6,18 @@ use Recruiter\StopWatch;
 
 class MicrotimeClockStopWatch implements StopWatch
 {
-    private $start;
-    private $elapsed;
+    private ?float $start = null;
 
     public function __construct(private readonly MicrotimeClock $clock)
     {
     }
 
-    public function start()
+    public function start(): void
     {
         $this->start = $this->clock->current();
     }
 
-    /**
-     * @return float
-     */
-    public function elapsedSeconds()
+    public function elapsedSeconds(): float
     {
         if (!$this->start) {
             throw new StopWatchNotStartedException();
@@ -31,18 +27,12 @@ class MicrotimeClockStopWatch implements StopWatch
         return $now - $this->start;
     }
 
-    /**
-     * @return float
-     */
-    public function elapsedMilliseconds()
+    public function elapsedMilliseconds(): float
     {
         return $this->elapsedSeconds() * 1000;
     }
 
-    /**
-     * @return float
-     */
-    public function elapsedMicroseconds()
+    public function elapsedMicroseconds(): float
     {
         return $this->elapsedMilliseconds() * 1000;
     }

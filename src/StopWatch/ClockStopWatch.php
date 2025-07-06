@@ -6,22 +6,21 @@ use Recruiter\StopWatch;
 
 class ClockStopWatch implements StopWatch
 {
-    private $start;
-    private $elapsed;
+    private ?\DateTime $start = null;
 
     public function __construct(private readonly Clock $clock)
     {
     }
 
-    public function start()
+    public function start(): void
     {
         $this->start = $this->clock->current();
     }
 
     /**
-     * @return float
+     * @throws StopWatchNotStartedException
      */
-    public function elapsedSeconds()
+    public function elapsedSeconds(): float
     {
         if (!$this->start) {
             throw new StopWatchNotStartedException();
@@ -32,17 +31,14 @@ class ClockStopWatch implements StopWatch
     }
 
     /**
-     * @return float
+     * @throws StopWatchNotStartedException
      */
-    public function elapsedMilliseconds()
+    public function elapsedMilliseconds(): float
     {
         return $this->elapsedSeconds() * 1000;
     }
 
-    /**
-     * @return float
-     */
-    public function elapsedMicroseconds()
+    public function elapsedMicroseconds(): float
     {
         return $this->elapsedMilliseconds() * 1000;
     }

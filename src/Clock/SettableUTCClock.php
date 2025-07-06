@@ -12,7 +12,7 @@ class SettableUTCClock implements UTCClock
     {
     }
 
-    public function current()
+    public function current(): UTCDateTime
     {
         if (null === $this->fixed) {
             return $this->innerClock->current();
@@ -21,19 +21,19 @@ class SettableUTCClock implements UTCClock
         return $this->fixed;
     }
 
-    public function setCurrent(UTCDateTime $fixed)
+    public function setCurrent(UTCDateTime $fixed): void
     {
         $this->fixed = $fixed;
     }
 
-    public function elapse(\DateInterval $amount)
+    public function elapse(\DateInterval $amount): UTCDateTime
     {
         $this->setCurrent($this->current()->add($amount));
 
         return $this->current();
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->fixed = null;
     }

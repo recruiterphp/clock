@@ -5,10 +5,7 @@ use DateTime;
 
 class SystemClock implements Clock
 {
-    /**
-     * @return DateTime
-     */
-    public function current()
+    public function current(): DateTime
     {
         return new DateTime();
     }
