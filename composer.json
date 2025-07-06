@@ -6,8 +6,9 @@
         "ext-mongodb": ">=1.15"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5",
+        "ergebnis/composer-normalize": "^2.47",
         "giorgiosironi/eris": "^1.0",
+        "phpunit/phpunit": "^10.5",
         "rector/rector": "^2.1"
     },
     "autoload": {
@@ -17,7 +18,15 @@
     },
     "autoload-dev": {
         "psr-0": {
-          "Recruiter\\": ["spec/unit/"]
+            "Recruiter\\": [
+                "spec/unit/"
+            ]
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true
+        },
+        "sort-packages": true
     }
 }
