@@ -1,9 +1,11 @@
 <?php
 namespace Recruiter\Clock;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Recruiter\DateTime\UTCDateTime;
 use Recruiter\UTCClock;
 
+#[CoversClass(SettableUTCClock::class)]
 class SettableUTCClockTest extends \PHPUnit\Framework\TestCase
 {
     protected function setUp(): void

@@ -2,9 +2,11 @@
 namespace Recruiter\DateTime;
 
 use MongoDB;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
+#[CoversClass(UTCDateTimeRange::class)]
 class UTCDateTimeRangeTest extends TestCase
 {
     public function testItCanBuildAClosedInterval()

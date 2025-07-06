@@ -424,7 +424,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return $this->toDateTime()->diff($another->toDateTime());
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->toIso8601WithMicroseconds();
     }

@@ -17,29 +17,29 @@ class RangeIterator implements \Iterator
         $this->rewind();
     }
 
-    public function current()
+    public function current(): mixed
     {
         return $this->current;
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->index;
     }
 
-    public function next()
+    public function next(): void
     {
         $this->current = call_user_func($this->incrementer, $this->current);
         $this->index++;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->current = clone $this->from;
         $this->index = 0;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return call_user_func($this->comparator, $this->current, $this->to);
     }

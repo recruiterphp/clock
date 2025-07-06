@@ -1,9 +1,11 @@
 <?php
 namespace Recruiter\StopWatch;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Recruiter\Clock\FixedMicrotimeClock;
 
+#[CoversClass(MicrotimeClockStopWatch::class)]
 class MicrotimeClockStopWatchTest extends TestCase
 {
     protected function setUp(): void
