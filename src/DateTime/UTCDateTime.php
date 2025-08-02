@@ -106,7 +106,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return $this->usec;
     }
 
-    public static function box($dateToBox)
+    public static function box($dateToBox): ?self
     {
         if (is_null($dateToBox) || $dateToBox instanceof self) {
             return $dateToBox;
@@ -140,6 +140,13 @@ final class UTCDateTime implements JsonSerializable, \Stringable
             $usec = (int) $clonedDateToBox->format('u');
             return new self($clonedDateToBox->getTimestamp(), $usec);
         }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                '%s is not a valid value to box',
+                var_export($dateToBox, true)
+            )
+        );
     }
 
     public static function fromStringAndtimezone($string, DateTimeZone $timeZone)
