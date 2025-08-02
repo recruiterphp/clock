@@ -1,11 +1,14 @@
 <?php
 namespace Recruiter\Clock;
+use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
 use DateTime;
 use DateInterval;
 
-readonly class ProgressiveClock implements Clock
+readonly class ProgressiveClock implements Clock, ClockInterface
 {
+    use PsrSupport;
+
     private DateTime $current;
     private DateInterval $defaultInterval;
 

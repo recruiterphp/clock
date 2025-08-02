@@ -3,10 +3,13 @@ namespace Recruiter\Clock;
 
 use DateTime;
 use DateInterval;
+use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
 
-class SettableClock implements Clock
+class SettableClock implements Clock, ClockInterface
 {
+    use PsrSupport;
+
     public function __construct(private readonly DateTime $current)
     {
     }

@@ -4,7 +4,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "ext-mongodb": ">=1.15"
+        "ext-mongodb": ">=1.15",
+        "psr/clock": "^1.0"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.47",
