@@ -1,5 +1,6 @@
 {
     "name": "recruiterphp/clock",
+    "description": "Clock and Date library created before PSR alternative existed",
     "license": "MIT",
     "require": {
         "php": "^8.4",
