@@ -37,7 +37,7 @@ class SettableUTCClockTest extends TestCase
         $this->innerClock
             ->expects($this->any())
             ->method('current')
-            ->will($this->returnValue($time))
+            ->willReturn($time)
         ;
 
         $this->assertEquals(
@@ -53,7 +53,7 @@ class SettableUTCClockTest extends TestCase
         $this->innerClock
             ->expects($this->any())
             ->method('current')
-            ->will($this->returnValue($time))
+            ->willReturn($time)
         ;
 
         $this->clock->setCurrent(
