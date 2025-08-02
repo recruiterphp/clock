@@ -6,7 +6,7 @@ use DateInterval;
 
 readonly class ProgressiveClock implements Clock
 {
-    private ?DateTime $current;
+    private DateTime $current;
     private DateInterval $defaultInterval;
 
     public function __construct(?DateTime $start = null, ?DateInterval $defaultInterval = null)
