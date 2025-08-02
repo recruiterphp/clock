@@ -11,7 +11,7 @@ class SettableClock implements Clock
     {
     }
 
-    public function advance($seconds): void
+    public function advance(int $seconds): void
     {
         $this->current->add(new DateInterval("PT{$seconds}S"));
     }

@@ -30,7 +30,7 @@ final readonly class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public function toDateTime(?DateTimeZone $timeZone = null): DateTime|false
+    public function toDateTime(?DateTimeZone $timeZone = null): DateTime
     {
         if (is_null($timeZone)) {
             $timeZone = new DateTimeZone("UTC");
@@ -418,7 +418,7 @@ final readonly class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public function startOfMonth(): ?UTCDateTime
+    public function startOfMonth(): UTCDateTime
     {
         return self::box(
             $this->toYearMonth() . '-01'
