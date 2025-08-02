@@ -1,7 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\StopWatch;
 
-use DateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Recruiter\Clock\FixedClock;
@@ -36,7 +38,7 @@ class ClockStopWatchTest extends TestCase
     public function testElapsedAfterStopping(): void
     {
         $this->stopWatch->start();
-        $this->clock->nowIs(new DateTime('2015-02-03 00:12:49'));
+        $this->clock->nowIs(new \DateTime('2015-02-03 00:12:49'));
 
         $this->assertEqualsWithDelta(6.0, $this->stopWatch->elapsedSeconds(), 0.1);
         $this->assertEqualsWithDelta(6000.0, $this->stopWatch->elapsedMilliseconds(), 0.1);

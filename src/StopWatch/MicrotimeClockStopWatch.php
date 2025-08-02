@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\StopWatch;
 
 use Recruiter\MicrotimeClock;
@@ -24,6 +27,7 @@ class MicrotimeClockStopWatch implements StopWatch
         }
 
         $now = $this->clock->current();
+
         return $now - $this->start;
     }
 

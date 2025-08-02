@@ -1,7 +1,8 @@
 <?php
-namespace Recruiter\DateTime;
 
-use DomainException;
+declare(strict_types=1);
+
+namespace Recruiter\DateTime;
 
 final readonly class UTCDateTimeRange
 {
@@ -25,7 +26,7 @@ final readonly class UTCDateTimeRange
     {
         return self::fromIncludedToIncluded(
             UTCDateTime::minimum(),
-            UTCDateTime::maximum()
+            UTCDateTime::maximum(),
         );
     }
 
@@ -92,21 +93,21 @@ final readonly class UTCDateTimeRange
     public function iteratorOnHours(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
-            fn($dateTime) => $dateTime->addHours($increment)
+            fn ($dateTime) => $dateTime->addHours($increment),
         );
     }
 
     public function iterateOnDays(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
-            fn($dateTime) => $dateTime->addDays($increment)
+            fn ($dateTime) => $dateTime->addDays($increment),
         );
     }
 
     public function iterateOnMonths(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
-            fn($dateTime) => $dateTime->addMonths($increment)
+            fn ($dateTime) => $dateTime->addMonths($increment),
         );
     }
 
@@ -123,14 +124,14 @@ final readonly class UTCDateTimeRange
 
     public function reverse(): self
     {
-        if ($this->toOperator === self::LESS_THAN) {
-            throw new DomainException("can't reverse an open range");
+        if (self::LESS_THAN === $this->toOperator) {
+            throw new \DomainException("can't reverse an open range");
         }
 
         return new self(
             $this->to,
             $this->from,
-            $this->toOperator
+            $this->toOperator,
         );
     }
 
@@ -149,16 +150,16 @@ final readonly class UTCDateTimeRange
             $this->from,
             $this->to,
             $this->dateComparator(),
-            $incrementer
+            $incrementer,
         );
     }
 
     private function dateComparator(): \Closure
     {
         return match ($this->toOperator) {
-            self::LESS_THAN => fn($x, $y) => $x < $y,
+            self::LESS_THAN => fn ($x, $y) => $x < $y,
             // to make the type checker happy
-            default => fn($x, $y) => $x <= $y,
+            default => fn ($x, $y) => $x <= $y,
         };
     }
 }

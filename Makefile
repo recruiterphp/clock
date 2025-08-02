@@ -1,4 +1,4 @@
-.PHONY: build up down test test-unit install shell logs clean
+.PHONY: build up down test test-unit fix-cs install shell logs clean
 
 # Build the Docker image
 build:
@@ -23,6 +23,9 @@ test: up
 # Run unit tests specifically
 test-unit: up
 	docker compose exec php vendor/bin/phpunit tests/unit
+
+fix-cs: up
+	docker compose exec php vendor/bin/php-cs-fixer fix -v
 
 # Open a shell in the PHP container
 shell:

@@ -1,41 +1,45 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\Clock;
+
 use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
-use DateTime;
-use DateInterval;
 
 readonly class ProgressiveClock implements Clock, ClockInterface
 {
     use PsrSupport;
 
-    private DateTime $current;
-    private DateInterval $defaultInterval;
+    private \DateTime $current;
+    private \DateInterval $defaultInterval;
 
-    public function __construct(?DateTime $start = null, ?DateInterval $defaultInterval = null)
+    public function __construct(?\DateTime $start = null, ?\DateInterval $defaultInterval = null)
     {
-        if ($start === null) {
-            $start = new DateTime();
+        if (null === $start) {
+            $start = new \DateTime();
         }
         $this->current = $start;
 
         if (!$defaultInterval) {
-            $this->defaultInterval = new DateInterval('PT1S');
+            $this->defaultInterval = new \DateInterval('PT1S');
         } else {
             $this->defaultInterval = $defaultInterval;
         }
     }
 
-    public function current(): DateTime
+    public function current(): \DateTime
     {
         $toReturn = clone $this->current;
         $this->current->add($this->defaultInterval);
+
         return $toReturn;
     }
 
-    public function forwardInTime(DateInterval $interval): static
+    public function forwardInTime(\DateInterval $interval): static
     {
         $this->current->add($interval);
+
         return $this;
     }
 }

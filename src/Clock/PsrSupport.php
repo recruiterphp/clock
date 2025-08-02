@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Recruiter\Clock;
 
 trait PsrSupport
 {
-    abstract function current(): \DateTime;
+    abstract public function current(): \DateTime;
 
     public function now(): \DateTimeImmutable
     {

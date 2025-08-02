@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\DateTime;
 
 class RangeIterator implements \Iterator
@@ -10,7 +13,7 @@ class RangeIterator implements \Iterator
         private readonly UTCDateTime $from,
         private readonly UTCDateTime $to,
         private readonly \Closure $comparator,
-        private readonly \Closure $incrementer
+        private readonly \Closure $incrementer,
     ) {
         $this->rewind();
     }
@@ -28,7 +31,7 @@ class RangeIterator implements \Iterator
     public function next(): void
     {
         $this->current = call_user_func($this->incrementer, $this->current);
-        $this->index++;
+        ++$this->index;
     }
 
     public function rewind(): void

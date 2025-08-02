@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -26,7 +29,7 @@ class SettableUTCClockTest extends TestCase
 
         $this->assertEquals(
             $time,
-            $this->clock->current()
+            $this->clock->current(),
         );
     }
 
@@ -42,7 +45,7 @@ class SettableUTCClockTest extends TestCase
 
         $this->assertEquals(
             $time,
-            $this->clock->current()
+            $this->clock->current(),
         );
     }
 
@@ -57,14 +60,14 @@ class SettableUTCClockTest extends TestCase
         ;
 
         $this->clock->setCurrent(
-            UTCDateTime::box('1985-05-21 08:40')
+            UTCDateTime::box('1985-05-21 08:40'),
         );
 
         $this->clock->reset();
 
         $this->assertEquals(
             $time,
-            $this->clock->current()
+            $this->clock->current(),
         );
     }
 }
