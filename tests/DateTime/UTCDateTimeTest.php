@@ -265,7 +265,8 @@ class UTCDateTimeTest extends TestCase
 
     #[TestWith(['20010909014640', '0.4 1000000000'])]
     #[TestWith(['20010909014640', '0.49999 1000000000'])]
-    #[TestWith(['20010909014641', '0.499999 1000000000'])]
+    #[TestWith(['20010909014640', '0.499999 1000000000'])]
+    #[TestWith(['20010909014641', '0.4999999 1000000000'])]
     #[TestWith(['20010909014641', '0.5 1000000000'])]
     #[TestWith(['20010909014641', '0.9 1000000000'])]
     public function testCondensedIso8601Precision(string $expected, string $microtime): void
