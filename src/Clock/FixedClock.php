@@ -1,10 +1,13 @@
 <?php
 namespace Recruiter\Clock;
+use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
 use DateTime;
 
-class FixedClock implements Clock
+class FixedClock implements Clock, ClockInterface
 {
+    use PsrSupport;
+
     public static function fromIso8601(string $timeRepresentation): self
     {
         return new self(new DateTime($timeRepresentation));
