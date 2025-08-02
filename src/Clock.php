@@ -1,9 +1,10 @@
 <?php
-namespace Recruiter;
 
-use DateTime;
+declare(strict_types=1);
+
+namespace Recruiter;
 
 interface Clock
 {
-    public function current(): DateTime;
+    public function current(): \DateTime;
 }

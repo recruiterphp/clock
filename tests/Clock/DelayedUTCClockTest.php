@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,11 +23,12 @@ class DelayedUTCClockTest extends TestCase
 
         $original->expects($this->once())
                  ->method('current')
-                 ->willReturn(UTCDateTime::fromTimestamp(10000018));
+                 ->willReturn(UTCDateTime::fromTimestamp(10000018))
+        ;
 
         $this->assertEquals(
             UTCDateTime::fromTimestamp(10000008),
-            $clock->current()
+            $clock->current(),
         );
     }
 }

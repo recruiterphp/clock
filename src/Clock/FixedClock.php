@@ -1,8 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\Clock;
+
 use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
-use DateTime;
 
 class FixedClock implements Clock, ClockInterface
 {
@@ -10,19 +13,19 @@ class FixedClock implements Clock, ClockInterface
 
     public static function fromIso8601(string $timeRepresentation): self
     {
-        return new self(new DateTime($timeRepresentation));
+        return new self(new \DateTime($timeRepresentation));
     }
 
-    public function __construct(private DateTime $time)
+    public function __construct(private \DateTime $time)
     {
     }
 
-    public function current(): DateTime
+    public function current(): \DateTime
     {
         return clone $this->time;
     }
 
-    public function nowIs(DateTime $time): void
+    public function nowIs(\DateTime $time): void
     {
         $this->time = $time;
     }

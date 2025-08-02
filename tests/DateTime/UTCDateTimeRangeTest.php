@@ -1,11 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\DateTime;
 
 use MongoDB;
+use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
 #[CoversClass(UTCDateTimeRange::class)]
 class UTCDateTimeRangeTest extends TestCase
@@ -14,7 +17,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('1985-05-21'),
-            UTCDateTime::box('2015-05-21')
+            UTCDateTime::box('2015-05-21'),
         );
 
         $this->assertEquals(
@@ -22,7 +25,7 @@ class UTCDateTimeRangeTest extends TestCase
                 '$gte' => new MongoUTCDateTime(485481600000),
                 '$lte' => new MongoUTCDateTime(1432166400000),
             ],
-            $range->toMongoDBQuery()
+            $range->toMongoDBQuery(),
         );
     }
 
@@ -30,7 +33,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('1985-05-21'),
-            UTCDateTime::box('2015-05-21')
+            UTCDateTime::box('2015-05-21'),
         );
 
         $this->assertEquals(
@@ -38,7 +41,7 @@ class UTCDateTimeRangeTest extends TestCase
                 '$gte' => new MongoUTCDateTime(485481600000),
                 '$lt' => new MongoUTCDateTime(1432166400000),
             ],
-            $range->toMongoDBQuery()
+            $range->toMongoDBQuery(),
         );
     }
 
@@ -46,7 +49,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('1985-05-21'),
-            UTCDateTime::box('2015-05-21')
+            UTCDateTime::box('2015-05-21'),
         );
 
         $this->assertEquals(
@@ -54,9 +57,9 @@ class UTCDateTimeRangeTest extends TestCase
                 'goofy' => [
                     '$gte' => new MongoUTCDateTime(485481600000),
                     '$lte' => new MongoUTCDateTime(1432166400000),
-                ]
+                ],
             ],
-            $range->toMongoQueryOnField('goofy')
+            $range->toMongoQueryOnField('goofy'),
         );
     }
 
@@ -64,7 +67,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             $from = UTCDateTime::box('1985-05-21 10:00'),
-            UTCDateTime::box('2015-05-21 12:00')
+            UTCDateTime::box('2015-05-21 12:00'),
         );
 
         $this->assertEquals($from, $range->from());
@@ -74,7 +77,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01'),
-            UTCDateTime::box('2015-01-02')
+            UTCDateTime::box('2015-01-02'),
         );
 
         $this->assertEquals('20150101000000..20150102000000', $range->toApiFormat());
@@ -84,7 +87,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01 03:00'),
-            UTCDateTime::box('2015-01-01 05:00')
+            UTCDateTime::box('2015-01-01 05:00'),
         );
 
         $this->assertEquals(
@@ -92,7 +95,7 @@ class UTCDateTimeRangeTest extends TestCase
                 UTCDateTime::box('2015-01-01 03:00'),
                 UTCDateTime::box('2015-01-01 04:00'),
             ],
-            iterator_to_array($range->iteratorOnHours())
+            iterator_to_array($range->iteratorOnHours()),
         );
     }
 
@@ -100,7 +103,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('2015-01-01 03:00'),
-            UTCDateTime::box('2015-01-01 05:00')
+            UTCDateTime::box('2015-01-01 05:00'),
         );
 
         $this->assertEquals(
@@ -109,7 +112,7 @@ class UTCDateTimeRangeTest extends TestCase
                 UTCDateTime::box('2015-01-01 04:00'),
                 UTCDateTime::box('2015-01-01 05:00'),
             ],
-            iterator_to_array($range->iteratorOnHours())
+            iterator_to_array($range->iteratorOnHours()),
         );
     }
 
@@ -117,7 +120,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01 03:00'),
-            UTCDateTime::box('2015-01-05 03:00')
+            UTCDateTime::box('2015-01-05 03:00'),
         );
 
         $this->assertEquals(
@@ -125,7 +128,7 @@ class UTCDateTimeRangeTest extends TestCase
                 UTCDateTime::box('2015-01-01 03:00'),
                 UTCDateTime::box('2015-01-03 03:00'),
             ],
-            iterator_to_array($range->iterateOnDays(2))
+            iterator_to_array($range->iterateOnDays(2)),
         );
     }
 
@@ -133,7 +136,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('2015-01-01 03:00'),
-            UTCDateTime::box('2015-01-03 05:00')
+            UTCDateTime::box('2015-01-03 05:00'),
         );
 
         $this->assertEquals(
@@ -142,7 +145,7 @@ class UTCDateTimeRangeTest extends TestCase
                 UTCDateTime::box('2015-01-02 03:00'),
                 UTCDateTime::box('2015-01-03 03:00'),
             ],
-            iterator_to_array($range->iterateOnDays())
+            iterator_to_array($range->iterateOnDays()),
         );
     }
 
@@ -150,7 +153,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToExcluded(
             UTCDateTime::box('2015-01-01 03:00'),
-            UTCDateTime::box('2015-05-01 03:00')
+            UTCDateTime::box('2015-05-01 03:00'),
         );
 
         $this->assertEquals(
@@ -158,7 +161,7 @@ class UTCDateTimeRangeTest extends TestCase
                 UTCDateTime::box('2015-01-01 03:00'),
                 UTCDateTime::box('2015-03-01 03:00'),
             ],
-            iterator_to_array($range->iterateOnMonths(2))
+            iterator_to_array($range->iterateOnMonths(2)),
         );
     }
 
@@ -166,7 +169,7 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('2015-01-01 03:00'),
-            UTCDateTime::box('2015-04-01 05:00')
+            UTCDateTime::box('2015-04-01 05:00'),
         );
 
         $this->assertEquals(
@@ -176,7 +179,7 @@ class UTCDateTimeRangeTest extends TestCase
                 UTCDateTime::box('2015-03-01 03:00'),
                 UTCDateTime::box('2015-04-01 03:00'),
             ],
-            iterator_to_array($range->iterateOnMonths())
+            iterator_to_array($range->iterateOnMonths()),
         );
     }
 
@@ -186,14 +189,14 @@ class UTCDateTimeRangeTest extends TestCase
             [
                 UTCDateTimeRange::fromIncludedToIncluded(
                     UTCDateTime::box('2015-01-01 03:00:00.123456'),
-                    UTCDateTime::box('2015-04-01 05:00:00.123456')
+                    UTCDateTime::box('2015-04-01 05:00:00.123456'),
                 ),
                 '[2015-01-01T03:00:00.123456+0000,2015-04-01T05:00:00.123456+0000]',
             ],
             [
                 UTCDateTimeRange::fromIncludedToExcluded(
                     UTCDateTime::box('2015-01-01 03:00:00.123456'),
-                    UTCDateTime::box('2015-04-01 05:00:00.123456')
+                    UTCDateTime::box('2015-04-01 05:00:00.123456'),
                 ),
                 '[2015-01-01T03:00:00.123456+0000,2015-04-01T05:00:00.123456+0000)',
             ],
@@ -211,12 +214,12 @@ class UTCDateTimeRangeTest extends TestCase
         $this->assertEquals(
             UTCDateTimeRange::fromIncludedToIncluded(
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
-                UTCDateTime::box('2015-04-01 05:00:00.123456')
+                UTCDateTime::box('2015-04-01 05:00:00.123456'),
             ),
             UTCDateTimeRange::fromIncludedToIncluded(
                 UTCDateTime::box('2015-04-01 05:00:00.123456'),
-                UTCDateTime::box('2015-01-01 03:00:00.123456')
-            )->reverse()
+                UTCDateTime::box('2015-01-01 03:00:00.123456'),
+            )->reverse(),
         );
     }
 
@@ -227,12 +230,12 @@ class UTCDateTimeRangeTest extends TestCase
         $this->assertEquals(
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
-                UTCDateTime::box('2015-04-01 05:00:00.123456')
+                UTCDateTime::box('2015-04-01 05:00:00.123456'),
             ),
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-04-01 05:00:00.123456'),
-                UTCDateTime::box('2015-01-01 03:00:00.123456')
-            )->reverse()
+                UTCDateTime::box('2015-01-01 03:00:00.123456'),
+            )->reverse(),
         );
     }
 
@@ -242,24 +245,24 @@ class UTCDateTimeRangeTest extends TestCase
             UTCDateTimeRange::ASCENDING,
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
-                UTCDateTime::box('2015-04-01 05:00:00.123456')
-            )->direction()
+                UTCDateTime::box('2015-04-01 05:00:00.123456'),
+            )->direction(),
         );
 
         $this->assertSame(
             UTCDateTimeRange::ASCENDING,
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
-                UTCDateTime::box('2015-01-01 03:00:00.123456')
-            )->direction()
+                UTCDateTime::box('2015-01-01 03:00:00.123456'),
+            )->direction(),
         );
 
         $this->assertSame(
             UTCDateTimeRange::DESCENDING,
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-04-01 05:00:00.123456'),
-                UTCDateTime::box('2015-01-01 03:00:00.123456')
-            )->direction()
+                UTCDateTime::box('2015-01-01 03:00:00.123456'),
+            )->direction(),
         );
     }
 
@@ -270,15 +273,15 @@ class UTCDateTimeRangeTest extends TestCase
     {
         $range = UTCDateTimeRange::fromIncludedToIncluded(
             UTCDateTime::box('1985-05-21'),
-            UTCDateTime::box('2015-05-21')
+            UTCDateTime::box('2015-05-21'),
         );
 
         $this->assertEquals(
             [
-                '$gte' => new MongoDB\BSON\UTCDateTime(485481600000),
-                '$lte' => new MongoDB\BSON\UTCDateTime(1432166400000),
+                '$gte' => new MongoUTCDateTime(485481600000),
+                '$lte' => new MongoUTCDateTime(1432166400000),
             ],
-            $range->toMongoDBQuery()
+            $range->toMongoDBQuery(),
         );
     }
 
@@ -287,9 +290,9 @@ class UTCDateTimeRangeTest extends TestCase
         $this->assertEquals(
             UTCDateTimeRange::fromIncludedToIncluded(
                 UTCDateTime::minimum(),
-                UTCDateTime::maximum()
+                UTCDateTime::maximum(),
             ),
-            UTCDateTimeRange::fromMinimumToMaximum()
+            UTCDateTimeRange::fromMinimumToMaximum(),
         );
     }
 }

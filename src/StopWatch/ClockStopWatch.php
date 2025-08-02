@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\StopWatch;
 
 use Recruiter\Clock;
@@ -27,7 +30,8 @@ class ClockStopWatch implements StopWatch
         }
 
         $now = $this->clock->current();
-        return (float)$now->diff($this->start)->s;
+
+        return (float) $now->diff($this->start)->s;
     }
 
     /**

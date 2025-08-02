@@ -1,10 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Recruiter\DateTime;
 
-use DateInterval;
-use DateTime;
-use DateTimeImmutable;
-use DateTimeZone;
 use Eris;
 use Eris\Generator;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
@@ -27,7 +26,7 @@ class UTCDateTimeTest extends TestCase
 
     public function testBoxingDateTime(): void
     {
-        $date = new DateTime();
+        $date = new \DateTime();
         $dateTime = UTCDateTime::box($date);
 
         $output = $dateTime->toDateTime();
@@ -37,7 +36,7 @@ class UTCDateTimeTest extends TestCase
 
     public function testBoxingDateTimeImmutable(): void
     {
-        $date = new DateTimeImmutable('2016-01-01 12:34:56 UTC');
+        $date = new \DateTimeImmutable('2016-01-01 12:34:56 UTC');
         $dateTime = UTCDateTime::box($date);
         $output = $dateTime->toDateTime();
 
@@ -47,10 +46,10 @@ class UTCDateTimeTest extends TestCase
 
     public function testTimestampIsNotAffectedByTimezone(): void
     {
-        $date = new DateTime();
+        $date = new \DateTime();
         $dateTime = UTCDateTime::box($date);
 
-        $output = $dateTime->toDateTime(new DateTimeZone('Europe/Rome'));
+        $output = $dateTime->toDateTime(new \DateTimeZone('Europe/Rome'));
 
         $this->assertEquals($date->getTimestamp(), $output->getTimestamp());
         $this->assertEquals($date, $output);
@@ -62,8 +61,8 @@ class UTCDateTimeTest extends TestCase
     public function testUnboxingToDateTimeImmutable(): void
     {
         $this->assertEquals(
-            new DateTimeImmutable('2016-01-01 12:34:56', new DateTimeZone('UTC')),
-            UTCDateTime::box('2016-01-01 12:34:56')->toDateTimeImmutable()
+            new \DateTimeImmutable('2016-01-01 12:34:56', new \DateTimeZone('UTC')),
+            UTCDateTime::box('2016-01-01 12:34:56')->toDateTimeImmutable(),
         );
     }
 
@@ -92,7 +91,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::fromIso8601('2014-09-01T12:01:02Z')->sec(),
-            UTCDateTime::fromApiFormat('20140901120102')->sec()
+            UTCDateTime::fromApiFormat('20140901120102')->sec(),
         );
     }
 
@@ -100,7 +99,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             '2014-09-01T12:01:02+0000',
-            UTCDateTime::fromIso8601('2014-09-01T12:01:02Z')->toIso8601()
+            UTCDateTime::fromIso8601('2014-09-01T12:01:02Z')->toIso8601(),
         );
     }
 
@@ -129,12 +128,12 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::box(new MongoUTCDateTime(1000123)),
-            UTCDateTime::fromMicrotime('0.123000 1000')
+            UTCDateTime::fromMicrotime('0.123000 1000'),
         );
 
         $this->assertEquals(
             UTCDateTime::fromFloat(1000000001.123),
-            UTCDateTime::fromMicrotime("0.123 1000000001")
+            UTCDateTime::fromMicrotime('0.123 1000000001'),
         );
     }
 
@@ -148,7 +147,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             new MongoUTCDateTime(1401624000000),
-            UTCDateTime::fromIso8601('2014-06-01T12:00:00+0000')->toMongoUTCDateTime()
+            UTCDateTime::fromIso8601('2014-06-01T12:00:00+0000')->toMongoUTCDateTime(),
         );
     }
 
@@ -157,7 +156,7 @@ class UTCDateTimeTest extends TestCase
         $this->forAll(
             Generator\choose(2000, 2020),
             Generator\choose(0, 364),
-            Generator\choose(0, 364)
+            Generator\choose(0, 364),
         )
             ->then(function ($year, $dayOfYear, $anotherDayOfYear): void {
                 $day = UTCDateTime::fromZeroBasedDayOfYear($year, $dayOfYear);
@@ -166,9 +165,10 @@ class UTCDateTimeTest extends TestCase
                     abs($dayOfYear - $anotherDayOfYear) * 86400,
                     abs($day->differenceInSeconds($anotherDay)),
                     "Days of the year $year: $dayOfYear, $anotherDayOfYear" . PHP_EOL
-                    . "{$day->toIso8601()}, {$anotherDay->toIso8601()}"
+                    . "{$day->toIso8601()}, {$anotherDay->toIso8601()}",
                 );
-            });
+            })
+        ;
     }
 
     public function testFromOneDayOfYearFactoryMethodRespectsDistanceBetweenDays(): void
@@ -176,7 +176,7 @@ class UTCDateTimeTest extends TestCase
         $this->forAll(
             Generator\choose(2000, 2020),
             Generator\choose(1, 365),
-            Generator\choose(1, 365)
+            Generator\choose(1, 365),
         )
             ->then(function ($year, $dayOfYear, $anotherDayOfYear): void {
                 $day = UTCDateTime::fromOneBasedDayOfYear($year, $dayOfYear);
@@ -185,48 +185,49 @@ class UTCDateTimeTest extends TestCase
                     abs($dayOfYear - $anotherDayOfYear) * 86400,
                     abs($day->differenceInSeconds($anotherDay)),
                     "Days of the year $year: $dayOfYear, $anotherDayOfYear" . PHP_EOL
-                    . "{$day->toIso8601()}, {$anotherDay->toIso8601()}"
+                    . "{$day->toIso8601()}, {$anotherDay->toIso8601()}",
                 );
-            });
+            })
+        ;
     }
 
     public function testCanBeDumpedAsAHumanReadableString(): void
     {
         $this->assertEquals(
-            "2001-09-09T01:46:40.123+0000",
-            UTCDateTime::fromMicrotime("0.123000 1000000000")->toIso8601WithMilliseconds()
+            '2001-09-09T01:46:40.123+0000',
+            UTCDateTime::fromMicrotime('0.123000 1000000000')->toIso8601WithMilliseconds(),
         );
     }
 
     public function testToYearMonth(): void
     {
         $this->assertEquals(
-            "2001-09",
-            UTCDateTime::fromString("2001-09-02 12:43:23")->toYearMonth()
+            '2001-09',
+            UTCDateTime::fromString('2001-09-02 12:43:23')->toYearMonth(),
         );
     }
 
     public function testMicrosecondsHaveAZerofillRepresentationForConsistency(): void
     {
         $this->assertEquals(
-            "2001-09-09T01:46:40.000+0000",
-            UTCDateTime::box("2001-09-09T01:46:40")->toIso8601WithMilliseconds()
+            '2001-09-09T01:46:40.000+0000',
+            UTCDateTime::box('2001-09-09T01:46:40')->toIso8601WithMilliseconds(),
         );
         $this->assertEquals(
-            "2001-09-09T01:46:40.001+0000",
-            UTCDateTime::fromMicrotime("0.001000 1000000000")->toIso8601WithMilliseconds()
+            '2001-09-09T01:46:40.001+0000',
+            UTCDateTime::fromMicrotime('0.001000 1000000000')->toIso8601WithMilliseconds(),
         );
     }
 
     public function testMicrosecondsAreReportedDuringFormattingWhenAvailable(): void
     {
         $this->assertEquals(
-            "2001-09-09T01:46:40.000000+0000",
-            UTCDateTime::box("2001-09-09T01:46:40")->toIso8601WithMicroseconds()
+            '2001-09-09T01:46:40.000000+0000',
+            UTCDateTime::box('2001-09-09T01:46:40')->toIso8601WithMicroseconds(),
         );
         $this->assertEquals(
-            "2001-09-09T01:46:40.123456+0000",
-            UTCDateTime::fromMicrotime("0.123456 1000000000")->toIso8601WithMicroseconds()
+            '2001-09-09T01:46:40.123456+0000',
+            UTCDateTime::fromMicrotime('0.123456 1000000000')->toIso8601WithMicroseconds(),
         );
     }
 
@@ -234,7 +235,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::box(new MongoUTCDateTime(985123)),
-            UTCDateTime::box(new MongoUTCDateTime(1000123))->subtractSeconds(15)
+            UTCDateTime::box(new MongoUTCDateTime(1000123))->subtractSeconds(15),
         );
     }
 
@@ -244,7 +245,7 @@ class UTCDateTimeTest extends TestCase
             14.6,
             UTCDateTime::box(new MongoUTCDateTime(1000123))
                 ->differenceInSeconds(
-                    UTCDateTime::box(new MongoUTCDateTime(985523))
+                    UTCDateTime::box(new MongoUTCDateTime(985523)),
                 ),
             1e-10,
         );
@@ -254,15 +255,15 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::box(new MongoUTCDateTime(1000123)),
-            UTCDateTime::box(new MongoUTCDateTime(985123))->addSeconds(15)
+            UTCDateTime::box(new MongoUTCDateTime(985123))->addSeconds(15),
         );
     }
 
     public function testCanAddHours(): void
     {
         $this->assertEquals(
-            UTCDateTime::box(new DateTime('2014-01-01 02:45:00')),
-            UTCDateTime::box(new DateTime('2014-01-01 01:45:00'))->addHours(1)
+            UTCDateTime::box(new \DateTime('2014-01-01 02:45:00')),
+            UTCDateTime::box(new \DateTime('2014-01-01 01:45:00'))->addHours(1),
         );
     }
 
@@ -276,7 +277,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             $expected,
-            UTCDateTime::fromMicrotime($microtime)->toCondensedIso8601()
+            UTCDateTime::fromMicrotime($microtime)->toCondensedIso8601(),
         );
     }
 
@@ -284,7 +285,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::fromString('2014-09-01T13:00:00Z'),
-            UTCDateTime::fromString('2014-09-01T12:00:00Z')->add(new DateInterval('PT1H'))
+            UTCDateTime::fromString('2014-09-01T12:00:00Z')->add(new \DateInterval('PT1H')),
         );
     }
 
@@ -292,32 +293,32 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertTrue(
             UTCDateTime::fromString('2014-09-01T12:00:01Z')->greaterThan(
-                UTCDateTime::fromString('2014-09-01T12:00:00Z')
-            )
+                UTCDateTime::fromString('2014-09-01T12:00:00Z'),
+            ),
         );
 
         $this->assertFalse(
             UTCDateTime::fromString('2014-09-01T12:00:00Z')->greaterThan(
-                UTCDateTime::fromString('2014-09-01T12:00:00Z')
-            )
+                UTCDateTime::fromString('2014-09-01T12:00:00Z'),
+            ),
         );
 
         $this->assertFalse(
             UTCDateTime::fromString('2014-09-01T12:00:00Z')->greaterThan(
-                UTCDateTime::fromString('2014-09-01T12:00:01Z')
-            )
+                UTCDateTime::fromString('2014-09-01T12:00:01Z'),
+            ),
         );
 
         $this->assertTrue(
             UTCDateTime::fromString('2014-09-01T12:00:00Z')->greaterThanOrEqual(
-                UTCDateTime::fromString('2014-09-01T12:00:00Z')
-            )
+                UTCDateTime::fromString('2014-09-01T12:00:00Z'),
+            ),
         );
 
         $this->assertTrue(
             UTCDateTime::fromString('2014-09-01T12:00:00.000001Z')->greaterThanOrEqual(
-                UTCDateTime::fromString('2014-09-01T12:00:00Z')
-            )
+                UTCDateTime::fromString('2014-09-01T12:00:00Z'),
+            ),
         );
     }
 
@@ -326,37 +327,37 @@ class UTCDateTimeTest extends TestCase
         $this->assertEquals(
             0,
             UTCDateTime::sort(
-                UTCDateTime::fromMicrotime("0.2 1000000000"),
-                UTCDateTime::fromMicrotime("0.2 1000000000")
-            )
+                UTCDateTime::fromMicrotime('0.2 1000000000'),
+                UTCDateTime::fromMicrotime('0.2 1000000000'),
+            ),
         );
         $this->assertEquals(
             -1,
             UTCDateTime::sort(
-                UTCDateTime::fromMicrotime("0.1 1000000000"),
-                UTCDateTime::fromMicrotime("0.2 1000000000")
-            )
+                UTCDateTime::fromMicrotime('0.1 1000000000'),
+                UTCDateTime::fromMicrotime('0.2 1000000000'),
+            ),
         );
         $this->assertEquals(
             1,
             UTCDateTime::sort(
-                UTCDateTime::fromMicrotime("0.2 1000000000"),
-                UTCDateTime::fromMicrotime("0.1 1000000000")
-            )
+                UTCDateTime::fromMicrotime('0.2 1000000000'),
+                UTCDateTime::fromMicrotime('0.1 1000000000'),
+            ),
         );
         $this->assertEquals(
             -1,
             UTCDateTime::sort(
-                UTCDateTime::fromMicrotime("0 1000000000"),
-                UTCDateTime::fromMicrotime("0 1000000001")
-            )
+                UTCDateTime::fromMicrotime('0 1000000000'),
+                UTCDateTime::fromMicrotime('0 1000000001'),
+            ),
         );
         $this->assertEquals(
             1,
             UTCDateTime::sort(
-                UTCDateTime::fromMicrotime("0 1000000001"),
-                UTCDateTime::fromMicrotime("0 1000000000")
-            )
+                UTCDateTime::fromMicrotime('0 1000000001'),
+                UTCDateTime::fromMicrotime('0 1000000000'),
+            ),
         );
     }
 
@@ -365,12 +366,12 @@ class UTCDateTimeTest extends TestCase
         $actual = [
             UTCDateTime::fromString('2000-01-01'),
             UTCDateTime::fromString('2003-01-01'),
-            UTCDateTime::fromString('2001-01-01')
+            UTCDateTime::fromString('2001-01-01'),
         ];
         $expected = [
             UTCDateTime::fromString('2000-01-01'),
             UTCDateTime::fromString('2001-01-01'),
-            UTCDateTime::fromString('2003-01-01')
+            UTCDateTime::fromString('2003-01-01'),
         ];
         usort($actual, '\Recruiter\DateTime\UTCDateTime::sort');
         $this->assertEquals($expected, $actual);
@@ -382,7 +383,7 @@ class UTCDateTimeTest extends TestCase
         $roundedDate = $date->startOfHour();
         $this->assertEquals(
             UTCDateTime::fromString('2000-01-01 01:00:00'),
-            $roundedDate
+            $roundedDate,
         );
     }
 
@@ -392,7 +393,7 @@ class UTCDateTimeTest extends TestCase
         $roundedDate = $date->startOfNextHour();
         $this->assertEquals(
             UTCDateTime::fromString('2000-01-01 02:00:00'),
-            $roundedDate
+            $roundedDate,
         );
     }
 
@@ -402,7 +403,7 @@ class UTCDateTimeTest extends TestCase
         $roundedDate = $date->startOfDay();
         $this->assertEquals(
             UTCDateTime::fromString('2000-01-01 00:00:00'),
-            $roundedDate
+            $roundedDate,
         );
     }
 
@@ -412,7 +413,7 @@ class UTCDateTimeTest extends TestCase
         $roundedDate = $date->endOfDay();
         $this->assertEquals(
             UTCDateTime::fromString('2000-01-01 23:59:59'),
-            $roundedDate
+            $roundedDate,
         );
     }
 
@@ -429,15 +430,16 @@ class UTCDateTimeTest extends TestCase
                 $this->assertEquals(
                     $date,
                     $addSub,
-                    "adding and subtracting {$months} month(s) from {$date} returned {$addSub}"
+                    "adding and subtracting {$months} month(s) from {$date} returned {$addSub}",
                 );
 
                 $this->assertEquals(
                     $date,
                     $subAdd,
-                    "subtracting and adding {$months} month(s) from {$date} returned {$subAdd}"
+                    "subtracting and adding {$months} month(s) from {$date} returned {$subAdd}",
                 );
-            });
+            })
+        ;
     }
 
     public function testAddDays(): void
@@ -474,7 +476,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::minimum(),
-            UTCDateTime::minimum()->subtractSeconds(1)
+            UTCDateTime::minimum()->subtractSeconds(1),
         );
     }
 
@@ -482,7 +484,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::maximum(),
-            UTCDateTime::maximum()->addSeconds(1)
+            UTCDateTime::maximum()->addSeconds(1),
         );
     }
 
@@ -530,7 +532,7 @@ class UTCDateTimeTest extends TestCase
         $date = UTCDateTime::box('2015-01-01');
 
         $this->assertFalse(
-            $date->lessThan($date)
+            $date->lessThan($date),
         );
     }
 
@@ -539,7 +541,7 @@ class UTCDateTimeTest extends TestCase
         $date = UTCDateTime::box('2015-01-01');
 
         $this->assertTrue(
-            $date->subtractSeconds(1)->lessThan($date)
+            $date->subtractSeconds(1)->lessThan($date),
         );
     }
 
@@ -549,9 +551,9 @@ class UTCDateTimeTest extends TestCase
 
         $this->assertEquals(
             UTCDateTime::fromMicrotime(
-                '0.123456 1420070400'
+                '0.123456 1420070400',
             ),
-            $date->withUsec(123456)
+            $date->withUsec(123456),
         );
     }
 
@@ -560,7 +562,8 @@ class UTCDateTimeTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('usecs must be within 0 and 999999, got 1000000');
         UTCDateTime::box('2015-01-01')
-            ->withUsec(1000000);
+            ->withUsec(1000000)
+        ;
     }
 
     public function testUsecLessThenRange(): void
@@ -568,19 +571,20 @@ class UTCDateTimeTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('usecs must be within 0 and 999999, got -1');
         UTCDateTime::box('2015-01-01')
-            ->withUsec(-1);
+            ->withUsec(-1)
+        ;
     }
 
     public function testItCanBeBoxedWithCustomTimeZone(): void
     {
         $boxed = UTCDateTime::fromStringAndTimezone(
             '2015-06-21T16:38:00',
-            new DateTimeZone('Europe/Rome')
+            new \DateTimeZone('Europe/Rome'),
         );
 
         $this->assertEquals(
             UTCDateTime::box('2015-06-21T14:38:00'),
-            $boxed
+            $boxed,
         );
     }
 
@@ -592,9 +596,9 @@ class UTCDateTimeTest extends TestCase
             ->forAll(
                 Generator\nat(),
                 Generator\date(
-                    new DateTime('1980-01-01'),
-                    new DateTime('2020-12-31')
-                )
+                    new \DateTime('1980-01-01'),
+                    new \DateTime('2020-12-31'),
+                ),
             )
             ->then(function ($days, $datetime): void {
                 $date = UTCDateTime::box($datetime);
@@ -605,15 +609,16 @@ class UTCDateTimeTest extends TestCase
                 $this->assertSame(
                     $days,
                     $addDiff,
-                    "adding and diffing {$days} days(s) from {$date->toIso8601()} returned {$addDiff}"
+                    "adding and diffing {$days} days(s) from {$date->toIso8601()} returned {$addDiff}",
                 );
 
                 $this->assertEquals(
                     $days,
                     $subDiff,
-                    "subtracting and diffing {$days} month(s) from {$date->toIso8601()} returned {$subDiff}"
+                    "subtracting and diffing {$days} month(s) from {$date->toIso8601()} returned {$subDiff}",
                 );
-            });
+            })
+        ;
     }
 
     public function testStartOfMonthWillGiveTheFirstDay(): void
@@ -621,17 +626,17 @@ class UTCDateTimeTest extends TestCase
         $this
             ->forAll(
                 Generator\date(
-                    new DateTime('1980-01-01'),
-                    new DateTime('2020-12-31')
-                )
+                    new \DateTime('1980-01-01'),
+                    new \DateTime('2020-12-31'),
+                ),
             )
-            ->then(function (DateTime $date): void {
-                $date->setTimeZone(new DateTimeZone('UTC'));
+            ->then(function (\DateTime $date): void {
+                $date->setTimeZone(new \DateTimeZone('UTC'));
                 $prefix = $date->format('Y-m');
 
                 $this->assertEquals(
                     $prefix . '-01T00:00:00.000+0000',
-                    UTCDateTime::box($date)->startOfMonth()->toIso8601WithMilliseconds()
+                    UTCDateTime::box($date)->startOfMonth()->toIso8601WithMilliseconds(),
                 );
             })
         ;
@@ -641,22 +646,22 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             UTCDateTime::box('2016-01-26 09:34:02')->withUsec(213060),
-            UTCDateTime::box('2016-01-26 09:34:02.21306')
+            UTCDateTime::box('2016-01-26 09:34:02.21306'),
         );
 
         $this->assertEquals(
             UTCDateTime::box('2016-01-26 09:34:02'),
-            UTCDateTime::box('2016-01-26 09:34:02.')
+            UTCDateTime::box('2016-01-26 09:34:02.'),
         );
 
         $this->assertEquals(
             UTCDateTime::box('2016-01-26 09:34:02'),
-            UTCDateTime::box('2016-01-26 09:34:02.0')
+            UTCDateTime::box('2016-01-26 09:34:02.0'),
         );
 
         $this->assertEquals(
             UTCDateTime::box('2016-01-26 09:34:02')->withUsec(100000),
-            UTCDateTime::box('2016-01-26 09:34:02.1')
+            UTCDateTime::box('2016-01-26 09:34:02.1'),
         );
     }
 
