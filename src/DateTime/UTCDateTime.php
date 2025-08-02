@@ -23,7 +23,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return $this->sec . ' ' . $this->usec;
     }
 
-    public function toMongoUTCDateTime()
+    public function toMongoUTCDateTime(): MongoUTCDateTime
     {
         return new MongoUTCDateTime(
             intval($this->sec * 1000 + (int) round($this->usec / 1000))
@@ -368,32 +368,32 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         }
     }
 
-    public function toHourlyPrecision()
+    public function toHourlyPrecision(): string
     {
         return $this->toDateTime()->format('Y-m-d H');
     }
 
-    public function toHour()
+    public function toHour(): string
     {
         return $this->toDateTime()->format('H');
     }
 
-    public function toWeek()
+    public function toWeek(): string
     {
         return $this->toDateTime()->format('Y-W');
     }
 
-    public function toYearMonth()
+    public function toYearMonth(): string
     {
         return $this->toDateTime()->format('Y-m');
     }
 
-    public function toSecondPrecision()
+    public function toSecondPrecision(): string
     {
         return $this->toDateTime()->format('Y-m-d H:i:s');
     }
 
-    public function withUsec($usec)
+    public function withUsec(int $usec): UTCDateTime
     {
         if ($usec < 0 || $usec > 999999) {
             throw new \InvalidArgumentException(
@@ -414,7 +414,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public function diff(UTCDateTime $another)
+    public function diff(UTCDateTime $another): DateInterval|false
     {
         return $this->toDateTime()->diff($another->toDateTime());
     }
