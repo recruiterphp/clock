@@ -686,4 +686,10 @@ class UTCDateTimeTest extends TestCase
 
         $this->assertEquals("\"$iso\"", json_encode(UTCDateTime::box($iso)));
     }
+
+    public function testBoxShouldFailOnUnsupportedObject(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        UTCDateTime::box(new \stdClass());
+    }
 }
