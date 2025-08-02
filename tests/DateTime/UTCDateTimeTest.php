@@ -9,6 +9,7 @@ use Eris;
 use Eris\Generator;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(UTCDateTime::class)]
@@ -262,27 +263,16 @@ class UTCDateTimeTest extends TestCase
         );
     }
 
-    public function testCondensedIso8601Precision(): void
+    #[TestWith(['20010909014640', '0.4 1000000000'])]
+    #[TestWith(['20010909014640', '0.49999 1000000000'])]
+    #[TestWith(['20010909014641', '0.499999 1000000000'])]
+    #[TestWith(['20010909014641', '0.5 1000000000'])]
+    #[TestWith(['20010909014641', '0.9 1000000000'])]
+    public function testCondensedIso8601Precision(string $expected, string $microtime): void
     {
         $this->assertEquals(
-            "20010909014640",
-            UTCDateTime::fromMicrotime("0.4 1000000000")->toCondensedIso8601()
-        );
-        $this->assertEquals(
-            "20010909014640",
-            UTCDateTime::fromMicrotime("0.49999 1000000000")->toCondensedIso8601()
-        );
-        $this->assertEquals(
-            "20010909014641",
-            UTCDateTime::fromMicrotime("0.499999 1000000000")->toCondensedIso8601()
-        );
-        $this->assertEquals(
-            "20010909014641",
-            UTCDateTime::fromMicrotime("0.5 1000000000")->toCondensedIso8601()
-        );
-        $this->assertEquals(
-            "20010909014641",
-            UTCDateTime::fromMicrotime("0.9 1000000000")->toCondensedIso8601()
+            $expected,
+            UTCDateTime::fromMicrotime($microtime)->toCondensedIso8601()
         );
     }
 
