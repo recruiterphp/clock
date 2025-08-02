@@ -198,7 +198,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         if ($usec >= 1) {
             throw new \InvalidArgumentException("usec parameter can’t be more than 1 second: {$usec}");
         }
-        return new self(intval($sec), intval($usec * 1000 * 1000));
+        return new self(intval($sec), intval(round($usec * 1000 * 1000)));
     }
 
     public static function fromFloat(float $timeInSeconds): self
