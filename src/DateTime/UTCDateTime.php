@@ -106,6 +106,10 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return $this->usec;
     }
 
+    /**
+     * @param $dateToBox
+     * @return ($dateToBox is null ? null : self)
+     */
     public static function box($dateToBox): ?self
     {
         if (is_null($dateToBox) || $dateToBox instanceof self) {
@@ -149,9 +153,9 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public static function fromStringAndtimezone($string, DateTimeZone $timeZone)
+    public static function fromStringAndtimezone(string $string, DateTimeZone $timeZone): UTCDateTime
     {
-        $pieces = explode('.', (string) $string);
+        $pieces = explode('.', $string);
 
         switch (count($pieces)) {
             case 1:
@@ -169,12 +173,12 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         }
     }
 
-    public static function fromString($string)
+    public static function fromString(string $string): UTCDateTime
     {
         return self::fromStringAndtimezone($string, new DateTimeZone('UTC'));
     }
 
-    public static function fromHourlyPrecision($string)
+    public static function fromHourlyPrecision(string $string): UTCDateTime
     {
         if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}$/', (string) $string)) {
             throw new InvalidArgumentException(
@@ -337,33 +341,33 @@ final class UTCDateTime implements JsonSerializable, \Stringable
             ->startOfHour();
     }
 
-    public function differenceInSeconds(UTCDateTime $another)
+    public function differenceInSeconds(UTCDateTime $another): float
     {
         return $this->sec + $this->usec / 1000000
             - $another->sec - $another->usec / 1000000;
     }
 
-    public function greaterThan(UTCDateTime $another)
+    public function greaterThan(UTCDateTime $another): bool
     {
         return $this->toDateTime() > $another->toDateTime();
     }
 
-    public function greaterThanOrEqual(UTCDateTime $another)
+    public function greaterThanOrEqual(UTCDateTime $another): bool
     {
         return self::sort($this, $another) >= 0;
     }
 
-    public function lessThanOrEqual(UTCDateTime $another)
+    public function lessThanOrEqual(UTCDateTime $another): bool
     {
         return self::sort($this, $another) <= 0;
     }
 
-    public function lessThan(UTCDateTime $another)
+    public function lessThan(UTCDateTime $another): bool
     {
         return self::sort($this, $another) < 0;
     }
 
-    public static function sort($a, $b)
+    public static function sort(self $a, self $b): int
     {
         if ($a->sec() == $b->sec() && $a->usec() == $b->usec()) {
             return 0;
@@ -414,7 +418,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public function startOfMonth()
+    public function startOfMonth(): ?UTCDateTime
     {
         return self::box(
             $this->toYearMonth() . '-01'
