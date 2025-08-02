@@ -30,7 +30,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         );
     }
 
-    public function toDateTime(DateTimeZone $timeZone = null): DateTime|false
+    public function toDateTime(?DateTimeZone $timeZone = null): DateTime|false
     {
         if (is_null($timeZone)) {
             $timeZone = new DateTimeZone("UTC");
@@ -47,19 +47,19 @@ final class UTCDateTime implements JsonSerializable, \Stringable
         return $date;
     }
 
-    public function toDateTimeImmutable(DateTimeZone $timeZone = null): DateTimeImmutable
+    public function toDateTimeImmutable(?DateTimeZone $timeZone = null): DateTimeImmutable
     {
         return DateTimeImmutable::createFromMutable($this->toDateTime($timeZone));
     }
 
-    public function toIso8601WithMilliseconds()
+    public function toIso8601WithMilliseconds(): string
     {
         $isoRepresentation = $this->toDateTime()
             ->format(DateTime::ISO8601) ;
         return $this->insertSubseconds($isoRepresentation, $this->usec / 1000, 3);
     }
 
-    public function toIso8601WithMicroseconds()
+    public function toIso8601WithMicroseconds(): string
     {
         $isoRepresentation = $this->toDateTime()
             ->format(DateTime::ISO8601) ;
