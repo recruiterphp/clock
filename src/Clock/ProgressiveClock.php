@@ -4,12 +4,12 @@ use Recruiter\Clock;
 use DateTime;
 use DateInterval;
 
-class ProgressiveClock implements Clock
+readonly class ProgressiveClock implements Clock
 {
     private ?DateTime $current;
     private DateInterval $defaultInterval;
 
-    public function __construct(DateTime $start = null, DateInterval $defaultInterval = null)
+    public function __construct(?DateTime $start = null, ?DateInterval $defaultInterval = null)
     {
         if ($start === null) {
             $start = new DateTime();

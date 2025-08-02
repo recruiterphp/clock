@@ -14,25 +14,25 @@ class MicrotimeClockStopWatchTest extends TestCase
         $this->stopWatch = new MicrotimeClockStopWatch($this->clock);
     }
 
-    public function testElapsedSecondsWithoutStarting()
+    public function testElapsedSecondsWithoutStarting(): void
     {
         $this->expectException(StopWatchNotStartedException::class);
         $this->stopWatch->elapsedSeconds();
     }
 
-    public function testElapsedMillisecondsWithoutStarting()
+    public function testElapsedMillisecondsWithoutStarting(): void
     {
         $this->expectException(StopWatchNotStartedException::class);
         $this->stopWatch->elapsedMilliseconds();
     }
 
-    public function testElapsedMicrosecondsWithoutStarting()
+    public function testElapsedMicrosecondsWithoutStarting(): void
     {
         $this->expectException(StopWatchNotStartedException::class);
         $this->stopWatch->elapsedMicroseconds();
     }
 
-    public function testElapsedAfterStopping()
+    public function testElapsedAfterStopping(): void
     {
         $this->stopWatch->start();
         $this->clock->nowIs(98.987653);

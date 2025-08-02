@@ -10,7 +10,7 @@ return RectorConfig::configure()
         __DIR__ . '/tests',
     ])
     // uncomment to reach your current PHP version
-    ->withPhpSets(php83: true)
+    ->withPhpSets(php84: true)
     ->withTypeCoverageLevel(3)
     ->withDeadCodeLevel(0)
     ->withCodeQualityLevel(0);

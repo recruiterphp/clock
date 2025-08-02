@@ -3,7 +3,7 @@ namespace Recruiter\DateTime;
 
 use DomainException;
 
-final class UTCDateTimeRange
+final readonly class UTCDateTimeRange
 {
     private const int LESS_THAN = 1;
     private const int LESS_THAN_EQUALS = 2;
@@ -30,9 +30,9 @@ final class UTCDateTimeRange
     }
 
     private function __construct(
-        private readonly UTCDateTime $from,
-        private readonly UTCDateTime $to,
-        private readonly int $toOperator,
+        private UTCDateTime $from,
+        private UTCDateTime $to,
+        private int $toOperator,
     ) {
     }
 
@@ -46,28 +46,22 @@ final class UTCDateTimeRange
 
     private function mongoOperator(int $toOperator): string
     {
-        switch ($toOperator) {
-            case self::LESS_THAN:
-                return '$lt';
-            case self::LESS_THAN_EQUALS:
-                return '$lte';
-        }
-
-        // won't be reached, makes the type checker happy
-        return '';
+        return match ($toOperator) {
+            self::LESS_THAN => '$lt',
+            self::LESS_THAN_EQUALS => '$lte',
+            // won't be reached, makes the type checker happy
+            default => '',
+        };
     }
 
     private function toOperatorParenthesis(int $toOperator): string
     {
-        switch ($toOperator) {
-            case self::LESS_THAN:
-                return ')';
-            case self::LESS_THAN_EQUALS:
-                return ']';
-        }
-
-        // won't be reached, makes the type checker happy
-        return '';
+        return match ($toOperator) {
+            self::LESS_THAN => ')',
+            self::LESS_THAN_EQUALS => ']',
+            // won't be reached, makes the type checker happy
+            default => '',
+        };
     }
 
     public function toMongoQueryOnField(string $fieldName): array
@@ -161,12 +155,10 @@ final class UTCDateTimeRange
 
     private function dateComparator(): \Closure
     {
-        switch ($this->toOperator) {
-            case self::LESS_THAN:
-                return fn($x, $y) => $x < $y;
-            case self::LESS_THAN_EQUALS:
-            default: // to make the type checker happy
-                return fn($x, $y) => $x <= $y;
-        }
+        return match ($this->toOperator) {
+            self::LESS_THAN => fn($x, $y) => $x < $y,
+            // to make the type checker happy
+            default => fn($x, $y) => $x <= $y,
+        };
     }
 }
