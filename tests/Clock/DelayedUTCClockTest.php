@@ -20,7 +20,7 @@ class DelayedUTCClockTest extends TestCase
 
         $original->expects($this->once())
                  ->method('current')
-                 ->will($this->returnValue(UTCDateTime::fromTimestamp(10000018)));
+                 ->willReturn(UTCDateTime::fromTimestamp(10000018));
 
         $this->assertEquals(
             UTCDateTime::fromTimestamp(10000008),

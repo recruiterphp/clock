@@ -3,6 +3,7 @@ namespace Recruiter\DateTime;
 
 use MongoDB;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
@@ -179,7 +180,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
-    public static function debugInfoExamples()
+    public static function debugInfoExamples(): array
     {
         return [
             [
@@ -199,9 +200,7 @@ class UTCDateTimeRangeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider debugInfoExamples
-     */
+    #[DataProvider('debugInfoExamples')]
     public function testDebugInfo(UTCDateTimeRange $range, $expected): void
     {
         $this->assertEquals(['ISO' => $expected], $range->__debugInfo());
