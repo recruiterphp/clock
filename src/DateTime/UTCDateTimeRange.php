@@ -89,7 +89,7 @@ final readonly class UTCDateTimeRange
         return sprintf('%s..%s', $this->from->toApiFormat(), $this->to->toApiFormat());
     }
 
-    public function iteratorOnHours($increment = 1): RangeIterator
+    public function iteratorOnHours(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
             fn($dateTime) => $dateTime->addHours($increment)
