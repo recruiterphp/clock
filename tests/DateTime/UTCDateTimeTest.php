@@ -56,6 +56,9 @@ class UTCDateTimeTest extends TestCase
         $this->assertEquals($date, $output);
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     */
     public function testUnboxingToDateTimeImmutable(): void
     {
         $this->assertEquals(
