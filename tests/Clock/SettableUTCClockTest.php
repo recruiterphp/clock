@@ -1,0 +1,70 @@
+<?php
+namespace Recruiter\Clock;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
+use Recruiter\DateTime\UTCDateTime;
+use Recruiter\UTCClock;
+
+#[CoversClass(SettableUTCClock::class)]
+class SettableUTCClockTest extends TestCase
+{
+    /**
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        $this->innerClock = $this->createMock(UTCClock::class);
+        $this->clock = new SettableUTCClock($this->innerClock);
+    }
+
+    public function testCurrentShouldReturnStubbedTime(): void
+    {
+        $time = UTCDateTime::box('2015-02-01 10:00');
+        $this->clock->setCurrent($time);
+
+        $this->assertEquals(
+            $time,
+            $this->clock->current()
+        );
+    }
+
+    public function testCurrentShouldBeAskedToInnerClockIfNotSet(): void
+    {
+        $time = UTCDateTime::box('2015-02-01 10:00');
+
+        $this->innerClock
+            ->expects($this->any())
+            ->method('current')
+            ->willReturn($time)
+        ;
+
+        $this->assertEquals(
+            $time,
+            $this->clock->current()
+        );
+    }
+
+    public function testStubbedTimeCanBeReset(): void
+    {
+        $time = UTCDateTime::box('2015-02-01 10:00');
+
+        $this->innerClock
+            ->expects($this->any())
+            ->method('current')
+            ->willReturn($time)
+        ;
+
+        $this->clock->setCurrent(
+            UTCDateTime::box('1985-05-21 08:40')
+        );
+
+        $this->clock->reset();
+
+        $this->assertEquals(
+            $time,
+            $this->clock->current()
+        );
+    }
+}
