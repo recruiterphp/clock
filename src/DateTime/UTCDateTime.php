@@ -10,11 +10,11 @@ use InvalidArgumentException;
 use JsonSerializable;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
-final class UTCDateTime implements JsonSerializable, \Stringable
+final readonly class UTCDateTime implements JsonSerializable, \Stringable
 {
     const int MAX_SECS = 4294967296;
 
-    private function __construct(private readonly int $sec, private readonly int $usec = 0)
+    private function __construct(private int $sec, private int $usec = 0)
     {
     }
 
@@ -88,7 +88,7 @@ final class UTCDateTime implements JsonSerializable, \Stringable
     public function toCondensedIso8601(): string
     {
         $roundedValue = round($this-> sec + ($this->usec / 1000 / 1000));
-        return (new DateTime("@{$roundedValue}"))->format('YmdHis');
+        return new DateTime("@{$roundedValue}")->format('YmdHis');
     }
 
     public function toApiFormat(): string
