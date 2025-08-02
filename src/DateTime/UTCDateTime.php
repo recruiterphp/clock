@@ -31,7 +31,7 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
         if (is_null($timeZone)) {
             $timeZone = new \DateTimeZone('UTC');
         }
-        $timestamp = $this->sec . '.' . str_pad($this->usec, 6, '0', STR_PAD_LEFT);
+        $timestamp = $this->sec . '.' . str_pad((string) $this->usec, 6, '0', STR_PAD_LEFT);
         $date = \DateTime::createFromFormat(
             'U.u',
             $timestamp,
@@ -321,7 +321,7 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
     public function startOfHour(): self
     {
         $newDateTime = $this->toDateTime();
-        $newDateTime->setTime($newDateTime->format('H'), 0, 0);
+        $newDateTime->setTime((int) $newDateTime->format('H'), 0);
 
         return self::box($newDateTime);
     }
