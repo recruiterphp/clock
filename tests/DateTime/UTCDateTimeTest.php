@@ -271,9 +271,15 @@ class UTCDateTimeTest extends TestCase
     #[TestWith(['20010909014641', '0.9 1000000000'])]
     public function testCondensedIso8601Precision(string $expected, string $microtime): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             $expected,
             UTCDateTime::fromMicrotime($microtime)->toCondensedIso8601(),
+        );
+
+        // toApiFormat is an alias for toCondensedIso8601
+        $this->assertSame(
+            $expected,
+            UTCDateTime::fromMicrotime($microtime)->toApiFormat(),
         );
     }
 
@@ -541,6 +547,40 @@ class UTCDateTimeTest extends TestCase
         );
     }
 
+    public function testLessThanOrEqualIsTrueOnEqualDates(): void
+    {
+        $date = UTCDateTime::box('2015-01-01');
+
+        $this->assertTrue(
+            $date->lessThanOrEqual($date),
+        );
+    }
+
+    public function testLessThanOrEqualInPositiveCase(): void
+    {
+        $date = UTCDateTime::box('2015-01-01');
+
+        $this->assertTrue(
+            $date->subtractSeconds(1)->lessThanOrEqual($date),
+        );
+    }
+
+    #[TestWith(['2024-01-01', '2024-W01'])]
+    #[TestWith(['2023-01-01', '2022-W52'])]
+    public function testWeek(string $date, string $expected): void
+    {
+        $date = UTCDateTime::box($date);
+        $this->assertSame($expected, $date->toWeek());
+    }
+
+    public function testSecondPrecision(): void
+    {
+        $this->assertEquals(
+            '2016-01-01 11:34:56',
+            UTCDateTime::box('2016-01-01 12:34:56 Europe/Rome')->toSecondPrecision()
+        );
+    }
+
     public function testItCanSetUsec(): void
     {
         $date = UTCDateTime::box('2015-01-01');
@@ -693,5 +733,10 @@ class UTCDateTimeTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         UTCDateTime::box(new \stdClass());
+    }
+
+    public function testNow(): void
+    {
+        $this->assertNotSame(UTCDateTime::now(), UTCDateTime::now());
     }
 }

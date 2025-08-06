@@ -36,10 +36,8 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
             'U.u',
             $timestamp,
         );
-        if (!$date) {
-            throw new \RuntimeException('Something went wrong when creating UTCDateTime');
-        }
 
+        assert($date instanceof \DateTime);
         $date->setTimeZone($timeZone);
 
         return $date;
@@ -386,7 +384,7 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
 
     public function toWeek(): string
     {
-        return $this->toDateTime()->format('Y-W');
+        return $this->toDateTime()->format('o-\WW');
     }
 
     public function toYearMonth(): string
