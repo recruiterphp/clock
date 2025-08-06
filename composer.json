@@ -2,6 +2,12 @@
     "name": "recruiterphp/clock",
     "description": "Clock and Date library created before PSR alternative existed",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/recruiterphp/clock/graphs/contributors"
+        }
+    ],
     "require": {
         "php": "^8.4",
         "ext-mongodb": ">=1.15",
