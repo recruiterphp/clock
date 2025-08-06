@@ -11,6 +11,9 @@ use Recruiter\Clock\FixedMicrotimeClock;
 #[CoversClass(MicrotimeClockStopWatch::class)]
 class MicrotimeClockStopWatchTest extends TestCase
 {
+    private FixedMicrotimeClock $clock;
+    private MicrotimeClockStopWatch $stopWatch;
+
     protected function setUp(): void
     {
         $this->clock = new FixedMicrotimeClock(45.123456);

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Recruiter\DateTime;
 
+use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
+
 final readonly class UTCDateTimeRange
 {
     private const int LESS_THAN = 1;
@@ -37,6 +39,9 @@ final readonly class UTCDateTimeRange
     ) {
     }
 
+    /**
+     * @return array<string, MongoUTCDateTime>
+     */
     public function toMongoDBQuery(): array
     {
         return [
@@ -65,6 +70,10 @@ final readonly class UTCDateTimeRange
         };
     }
 
+    /**
+     * @param string $fieldName
+     * @return array<string,array<string,MongoUTCDateTime>>
+     */
     public function toMongoQueryOnField(string $fieldName): array
     {
         return [$fieldName => $this->toMongoDBQuery()];
@@ -93,25 +102,28 @@ final readonly class UTCDateTimeRange
     public function iteratorOnHours(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
-            fn ($dateTime) => $dateTime->addHours($increment),
+            fn (UTCDateTime $dateTime) => $dateTime->addHours($increment),
         );
     }
 
     public function iterateOnDays(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
-            fn ($dateTime) => $dateTime->addDays($increment),
+            fn (UTCDateTime $dateTime) => $dateTime->addDays($increment),
         );
     }
 
     public function iterateOnMonths(int $increment = 1): RangeIterator
     {
         return $this->generatorWith(
-            fn ($dateTime) => $dateTime->addMonths($increment),
+            fn (UTCDateTime $dateTime) => $dateTime->addMonths($increment),
         );
     }
 
-    public function __debugInfo()
+    /**
+     * @return array<string,string>
+     */
+    public function __debugInfo(): array
     {
         $debug = '[';
         $debug .= $this->from->toIso8601WithMicroseconds();
@@ -144,6 +156,10 @@ final readonly class UTCDateTimeRange
         }
     }
 
+    /**
+     * @param \Closure(UTCDateTime): UTCDateTime $incrementer
+     * @return RangeIterator
+     */
     private function generatorWith(\Closure $incrementer): RangeIterator
     {
         return new RangeIterator(
@@ -154,12 +170,15 @@ final readonly class UTCDateTimeRange
         );
     }
 
+    /**
+     * @return \Closure(UTCDateTime,UTCDateTime): bool
+     */
     private function dateComparator(): \Closure
     {
         return match ($this->toOperator) {
-            self::LESS_THAN => fn ($x, $y) => $x < $y,
+            self::LESS_THAN => fn (UTCDateTime $x, UTCDateTime $y) => $x < $y,
             // to make the type checker happy
-            default => fn ($x, $y) => $x <= $y,
+            default => fn (UTCDateTime $x, UTCDateTime $y) => $x <= $y,
         };
     }
 }

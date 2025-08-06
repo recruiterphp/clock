@@ -1,0 +1,7 @@
+parameters:
+  level: max
+  paths:
+    - src
+    - tests
+  scanDirectories:
+    - %currentWorkingDirectory%/vendor/giorgiosironi/eris/src/

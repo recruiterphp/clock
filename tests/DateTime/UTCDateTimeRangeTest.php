@@ -183,6 +183,9 @@ class UTCDateTimeRangeTest extends TestCase
         );
     }
 
+    /**
+     * @return array<int,array<UTCDateTimeRange|string>>
+     */
     public static function debugInfoExamples(): array
     {
         return [
@@ -204,7 +207,7 @@ class UTCDateTimeRangeTest extends TestCase
     }
 
     #[DataProvider('debugInfoExamples')]
-    public function testDebugInfo(UTCDateTimeRange $range, $expected): void
+    public function testDebugInfo(UTCDateTimeRange $range, string $expected): void
     {
         $this->assertEquals(['ISO' => $expected], $range->__debugInfo());
     }

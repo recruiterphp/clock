@@ -36,9 +36,11 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
             'U.u',
             $timestamp,
         );
-        if ($date) {
-            $date->setTimeZone($timeZone);
+        if (!$date) {
+            throw new \RuntimeException('Something went wrong when creating UTCDateTime');
         }
+
+        $date->setTimeZone($timeZone);
 
         return $date;
     }
@@ -110,7 +112,7 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
     /**
      * @return ($dateToBox is null ? null : self)
      */
-    public static function box($dateToBox): ?self
+    public static function box(mixed $dateToBox): ?self
     {
         if (is_null($dateToBox) || $dateToBox instanceof self) {
             return $dateToBox;
@@ -213,17 +215,17 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
         return self::box($d)->addDays($days)->startOfDay();
     }
 
-    public static function fromOneBasedDayOfYear($year, $days): self
+    public static function fromOneBasedDayOfYear(int $year, int $days): self
     {
         return self::fromZeroBasedDayOfYear($year, $days - 1);
     }
 
-    public static function fromIso8601($formattedString): self
+    public static function fromIso8601(string $formattedString): self
     {
         return self::fromString($formattedString);
     }
 
-    public static function fromApiFormat($formattedString): self
+    public static function fromApiFormat(string $formattedString): self
     {
         return self::fromString($formattedString);
     }
@@ -238,12 +240,12 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
         return new self(self::MAX_SECS);
     }
 
-    public function subtractSeconds($seconds): self
+    public function subtractSeconds(int $seconds): self
     {
         return $this->addSeconds(-$seconds);
     }
 
-    public function addSeconds($seconds): self
+    public function addSeconds(int $seconds): self
     {
         if ($this->sec + $seconds > self::MAX_SECS) {
             $sec = self::MAX_SECS;
@@ -264,32 +266,32 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
         return self::box($newDateTime);
     }
 
-    public function addMonths($months): self
+    public function addMonths(int $months): self
     {
         return $this->add(new \DateInterval(sprintf('P%dM', $months)));
     }
 
-    public function subtractMonths($months): self
+    public function subtractMonths(int $months): self
     {
         return $this->sub(new \DateInterval(sprintf('P%dM', $months)));
     }
 
-    public function addDays($days): self
+    public function addDays(int $days): self
     {
         return $this->add(new \DateInterval(sprintf('P%dD', $days)));
     }
 
-    public function subtractDays($days): self
+    public function subtractDays(int $days): self
     {
         return $this->sub(new \DateInterval(sprintf('P%dD', $days)));
     }
 
-    public function addHours($hours): self
+    public function addHours(int $hours): self
     {
         return $this->add(new \DateInterval(sprintf('PT%dH', $hours)));
     }
 
-    public function subtractHours($hours): self
+    public function subtractHours(int $hours): self
     {
         return $this->sub(new \DateInterval(sprintf('PT%dH', $hours)));
     }
@@ -416,7 +418,7 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
         );
     }
 
-    public function diff(UTCDateTime $another): \DateInterval|false
+    public function diff(UTCDateTime $another): \DateInterval
     {
         return $this->toDateTime()->diff($another->toDateTime());
     }
@@ -426,7 +428,10 @@ final readonly class UTCDateTime implements \JsonSerializable, \Stringable
         return $this->toIso8601WithMicroseconds();
     }
 
-    public function __debugInfo()
+    /**
+     * @return array<string,string>
+     */
+    public function __debugInfo(): array
     {
         return ['ISO' => $this->toIso8601WithMicroseconds()];
     }
