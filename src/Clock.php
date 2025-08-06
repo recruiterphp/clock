@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Recruiter;
 
-interface Clock
+use Psr\Clock\ClockInterface;
+
+interface Clock extends ClockInterface
 {
+    /**
+     * @deprecated Use now() instead
+     */
     public function current(): \DateTime;
 }

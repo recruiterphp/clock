@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
 
-class SystemClock implements Clock, ClockInterface
+class SystemClock implements Clock
 {
     use PsrSupport;
 
