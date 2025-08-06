@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        target: ci
+        push: false
+        load: true
+        tags: recruiterphp/clock-php:latest
+        build-args: |
+          PHP_VERSION=8.4
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Run test suite
+      run: make test

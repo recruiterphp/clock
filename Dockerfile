@@ -1,4 +1,6 @@
-FROM php:8.4-cli
+ARG PHP_VERSION=8.4
+
+FROM php:${PHP_VERSION}-cli as base
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -19,6 +21,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
+# Set environment variable for Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+CMD ["tail", "-f", "/dev/null"]
+
+FROM base as ci
+
 # Copy composer files
 COPY composer.json composer.lock* ./
 
@@ -27,8 +36,3 @@ RUN composer install --optimize-autoloader
 
 # Copy application code
 COPY . .
-
-# Set environment variable for Composer
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-CMD ["tail", "-f", "/dev/null"]

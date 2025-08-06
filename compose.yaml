@@ -1,8 +1,11 @@
 services:
   php:
-    build: .
+    build:
+      context: .
+      args:
+        - PHP_VERSION=${PHP_VERSION}
+      tags:
+        - latest
     working_dir: /app
-    volumes:
-      - .:/app
     environment:
       - COMPOSER_ALLOW_SUPERUSER=1
