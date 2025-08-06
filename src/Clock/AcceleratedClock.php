@@ -6,21 +6,24 @@ namespace Recruiter\Clock;
 
 use Recruiter\Clock;
 
-readonly class AcceleratedClock implements Clock
+class AcceleratedClock implements Clock
 {
-    use PsrSupport;
+    use BackwardSupport;
 
-    public function __construct(private \DateTime $time)
+    private \DateTimeImmutable $now;
+
+    public function __construct(\DateTimeInterface $now)
     {
+        $this->now = \DateTimeImmutable::createFromInterface($now);
     }
 
-    public function current(): \DateTime
+    public function now(): \DateTimeImmutable
     {
-        return clone $this->time;
+        return $this->now;
     }
 
     public function advance(\DateInterval $interval): void
     {
-        $this->time->add($interval);
+        $this->now = $this->now->add($interval);
     }
 }
