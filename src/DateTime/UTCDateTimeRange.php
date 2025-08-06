@@ -71,7 +71,6 @@ final readonly class UTCDateTimeRange
     }
 
     /**
-     * @param string $fieldName
      * @return array<string,array<string,MongoUTCDateTime>>
      */
     public function toMongoQueryOnField(string $fieldName): array
@@ -158,7 +157,6 @@ final readonly class UTCDateTimeRange
 
     /**
      * @param \Closure(UTCDateTime): UTCDateTime $incrementer
-     * @return RangeIterator
      */
     private function generatorWith(\Closure $incrementer): RangeIterator
     {

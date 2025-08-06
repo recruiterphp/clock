@@ -14,7 +14,7 @@ class RangeIterator implements \Iterator
 
     /**
      * @param \Closure(UTCDateTime,UTCDateTime): bool $comparator
-     * @param \Closure(UTCDateTime): UTCDateTime $incrementer
+     * @param \Closure(UTCDateTime): UTCDateTime      $incrementer
      */
     public function __construct(
         private readonly UTCDateTime $from,
