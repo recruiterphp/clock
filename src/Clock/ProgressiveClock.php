@@ -6,19 +6,19 @@ namespace Recruiter\Clock;
 
 use Recruiter\Clock;
 
-readonly class ProgressiveClock implements Clock
+class ProgressiveClock implements Clock
 {
-    use PsrSupport;
+    use BackwardSupport;
 
-    private \DateTime $current;
-    private \DateInterval $defaultInterval;
+    private \DateTimeImmutable $now;
+    private readonly \DateInterval $defaultInterval;
 
-    public function __construct(?\DateTime $start = null, ?\DateInterval $defaultInterval = null)
+    public function __construct(?\DateTimeInterface $start = null, ?\DateInterval $defaultInterval = null)
     {
         if (null === $start) {
-            $start = new \DateTime();
+            $start = new \DateTimeImmutable();
         }
-        $this->current = $start;
+        $this->now = \DateTimeImmutable::createFromInterface($start);
 
         if (!$defaultInterval) {
             $this->defaultInterval = new \DateInterval('PT1S');
@@ -27,10 +27,11 @@ readonly class ProgressiveClock implements Clock
         }
     }
 
-    public function current(): \DateTime
+    public function now(): \DateTimeImmutable
     {
-        $toReturn = clone $this->current;
-        $this->current->add($this->defaultInterval);
+        $toReturn = $this->now;
+
+        $this->now = $this->now->add($this->defaultInterval);
 
         return $toReturn;
     }

@@ -4,28 +4,35 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
+use DateTimeImmutable;
 use Recruiter\Clock;
 
 class FixedClock implements Clock
 {
-    use PsrSupport;
+    use BackwardSupport;
 
+    private \DateTimeImmutable $now;
+
+    /**
+     * @throws \DateMalformedStringException
+     */
     public static function fromIso8601(string $timeRepresentation): self
     {
-        return new self(new \DateTime($timeRepresentation));
+        return new self(new \DateTimeImmutable($timeRepresentation));
     }
 
-    public function __construct(private \DateTime $time)
+    public function __construct(\DateTimeInterface $time)
     {
+        $this->nowIs($time);
     }
 
-    public function current(): \DateTime
+    public function now(): \DateTimeImmutable
     {
-        return clone $this->time;
+        return clone $this->now;
     }
 
-    public function nowIs(\DateTime $time): void
+    public function nowIs(\DateTimeInterface $time): void
     {
-        $this->time = $time;
+        $this->now = DateTimeImmutable::createFromInterface($time);
     }
 }

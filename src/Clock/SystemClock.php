@@ -8,10 +8,10 @@ use Recruiter\Clock;
 
 class SystemClock implements Clock
 {
-    use PsrSupport;
+    use BackwardSupport;
 
-    public function current(): \DateTime
+    public function now(): \DateTimeImmutable
     {
-        return new \DateTime();
+        return new \DateTimeImmutable();
     }
 }
