@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Recruiter\DateTime;
 
-use MongoDB;
 use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
