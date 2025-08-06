@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
 
-readonly class ProgressiveClock implements Clock, ClockInterface
+readonly class ProgressiveClock implements Clock
 {
     use PsrSupport;
 

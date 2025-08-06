@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Psr\Clock\ClockInterface;
 use Recruiter\Clock;
 
-class SettableClock implements Clock, ClockInterface
+class SettableClock implements Clock
 {
     use PsrSupport;
 
