@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Clock;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +24,7 @@ class PsrUTCClockTest extends TestCase
 
         $original->expects($this->once())
                  ->method('now')
-                 ->willReturn(new DateTimeImmutable('1989-11-09T18:57:00 Europe/Berlin'));
+                 ->willReturn(new \DateTimeImmutable('1989-11-09T18:57:00 Europe/Berlin'))
         ;
 
         $this->assertEquals(

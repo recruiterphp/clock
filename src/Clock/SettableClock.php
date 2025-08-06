@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use DateTimeImmutable;
 use Recruiter\Clock;
 
 class SettableClock implements Clock
 {
     use BackwardSupport;
 
-    private DateTimeImmutable $now;
+    private \DateTimeImmutable $now;
 
     public function __construct(\DateTimeInterface $now)
     {
-        $this->now = DateTimeImmutable::createFromInterface($now);
+        $this->now = \DateTimeImmutable::createFromInterface($now);
     }
 
     public function advance(int $seconds): void
