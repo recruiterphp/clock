@@ -1,0 +1,19 @@
+<?php
+
+namespace Recruiter\Clock;
+
+use Psr\Clock\ClockInterface;
+use Recruiter\DateTime\UTCDateTime;
+use Recruiter\UTCClock;
+
+final readonly class PsrUTCClock implements UTCClock
+{
+    public function __construct(private ClockInterface $wrapped)
+    {
+    }
+
+    public function current(): UTCDateTime
+    {
+        return UTCDateTime::box($this->wrapped->now());
+    }
+}
