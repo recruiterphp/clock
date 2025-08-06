@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Recruiter\Clock;
 
 use Psr\Clock\ClockInterface;

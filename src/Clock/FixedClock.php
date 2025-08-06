@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use DateTimeImmutable;
 use Recruiter\Clock;
 
 class FixedClock implements Clock
@@ -33,6 +32,6 @@ class FixedClock implements Clock
 
     public function nowIs(\DateTimeInterface $time): void
     {
-        $this->now = DateTimeImmutable::createFromInterface($time);
+        $this->now = \DateTimeImmutable::createFromInterface($time);
     }
 }
