@@ -11,6 +11,12 @@ use Recruiter\Clock\FixedClock;
 #[CoversClass(ClockStopWatch::class)]
 class ClockStopWatchTest extends TestCase
 {
+    private FixedClock $clock;
+    private ClockStopWatch $stopWatch;
+
+    /**
+     * @throws \DateMalformedStringException
+     */
     protected function setUp(): void
     {
         $this->clock = FixedClock::fromIso8601('2015-02-03 00:12:43');

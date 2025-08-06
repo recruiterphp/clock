@@ -68,6 +68,7 @@ class UTCDateTimeTest extends TestCase
 
     public function testBoxingNullValueReturnsNull(): void
     {
+        /** @phpstan-ignore-next-line */
         $this->assertNull(UTCDateTime::box(null));
     }
 
@@ -119,11 +120,6 @@ class UTCDateTimeTest extends TestCase
         $this->assertEquals($expectedDate, $actualDate);
     }
 
-    public function testNowFactoryMethod(): void
-    {
-        $this->assertNotNull(UTCDateTime::now());
-    }
-
     public function testPrecisionIsMaintainedwhenCreatedFromAMicrotimeString(): void
     {
         $this->assertEquals(
@@ -158,7 +154,7 @@ class UTCDateTimeTest extends TestCase
             Generator\choose(0, 364),
             Generator\choose(0, 364),
         )
-            ->then(function ($year, $dayOfYear, $anotherDayOfYear): void {
+            ->then(function (int $year, int $dayOfYear, int $anotherDayOfYear): void {
                 $day = UTCDateTime::fromZeroBasedDayOfYear($year, $dayOfYear);
                 $anotherDay = UTCDateTime::fromZeroBasedDayOfYear($year, $anotherDayOfYear);
                 $this->assertEquals(
@@ -178,7 +174,7 @@ class UTCDateTimeTest extends TestCase
             Generator\choose(1, 365),
             Generator\choose(1, 365),
         )
-            ->then(function ($year, $dayOfYear, $anotherDayOfYear): void {
+            ->then(function (int $year, int $dayOfYear, int $anotherDayOfYear): void {
                 $day = UTCDateTime::fromOneBasedDayOfYear($year, $dayOfYear);
                 $anotherDay = UTCDateTime::fromOneBasedDayOfYear($year, $anotherDayOfYear);
                 $this->assertEquals(
@@ -421,7 +417,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this
             ->forAll(Generator\nat())
-            ->then(function ($months): void {
+            ->then(function (int $months): void {
                 $date = UTCDateTime::fromString('2000-01-03 00:00:00');
 
                 $addSub = $date->addMonths($months)->subtractMonths($months);
@@ -600,8 +596,9 @@ class UTCDateTimeTest extends TestCase
                     new \DateTime('2020-12-31'),
                 ),
             )
-            ->then(function ($days, $datetime): void {
+            ->then(function (int $days, \DateTime $datetime): void {
                 $date = UTCDateTime::box($datetime);
+                $this->assertInstanceOf(UTCDateTime::class, $date);
 
                 $addDiff = $date->addDays($days)->diff($date)->days;
                 $subDiff = $date->subtractDays($days)->diff($date)->days;

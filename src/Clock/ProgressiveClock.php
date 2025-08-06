@@ -36,9 +36,12 @@ class ProgressiveClock implements Clock
         return $toReturn;
     }
 
+    /**
+     * @return $this
+     */
     public function forwardInTime(\DateInterval $interval): static
     {
-        $this->current->add($interval);
+        $this->now=$this->now->add($interval);
 
         return $this;
     }

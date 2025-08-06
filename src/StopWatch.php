@@ -6,7 +6,7 @@ namespace Recruiter;
 
 interface StopWatch
 {
-    public function start();
+    public function start(): void;
 
     /**
      * @throws StopWatch\StopWatchNotStartedException

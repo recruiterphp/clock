@@ -9,7 +9,7 @@ use Recruiter\UTCClock;
 
 class SettableUTCClock implements UTCClock
 {
-    private $fixed;
+    private ?UTCDateTime $fixed = null;
 
     public function __construct(private readonly UTCClock $innerClock)
     {

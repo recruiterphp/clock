@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace Recruiter\DateTime;
 
+/**
+ * @implements \Iterator<int,UTCDateTime>
+ */
 class RangeIterator implements \Iterator
 {
     private int $index;
     private UTCDateTime $current;
 
+    /**
+     * @param \Closure(UTCDateTime,UTCDateTime): bool $comparator
+     * @param \Closure(UTCDateTime): UTCDateTime $incrementer
+     */
     public function __construct(
         private readonly UTCDateTime $from,
         private readonly UTCDateTime $to,
