@@ -7,5 +7,3 @@ services:
       tags:
         - latest
     working_dir: /app
-    environment:
-      - COMPOSER_ALLOW_SUPERUSER=1
