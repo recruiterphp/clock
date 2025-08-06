@@ -41,7 +41,7 @@ class ProgressiveClock implements Clock
      */
     public function forwardInTime(\DateInterval $interval): static
     {
-        $this->now=$this->now->add($interval);
+        $this->now = $this->now->add($interval);
 
         return $this;
     }
