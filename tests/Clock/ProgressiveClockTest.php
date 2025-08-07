@@ -24,4 +24,15 @@ class ProgressiveClockTest extends TestCase
     {
         $this->assertGreaterThan($this->clock->current(), $this->clock->current());
     }
+
+    public function testForwardInTimeAdvancesTheClock(): void
+    {
+        $before = $this->clock->now();
+        $interval = new \DateInterval('PT2H'); // 2 hours
+        $this->clock->forwardInTime($interval);
+        $after = $this->clock->now();
+
+        $expected = $before->add($interval)->add(new \DateInterval('PT1S')); // +1s because now() advances by default
+        $this->assertEquals($expected, $after);
+    }
 }
