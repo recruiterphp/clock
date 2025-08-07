@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Recruiter\StopWatch;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Recruiter\Clock\FixedMicrotimeClock;
 
 #[CoversClass(MicrotimeClockStopWatch::class)]
+#[UsesClass(FixedMicrotimeClock::class)]
+#[UsesClass(StopWatchNotStartedException::class)]
 class MicrotimeClockStopWatchTest extends TestCase
 {
     private FixedMicrotimeClock $clock;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -12,6 +13,7 @@ use Recruiter\DateTime\UTCDateTime;
 use Recruiter\UTCClock;
 
 #[CoversClass(SettableUTCClock::class)]
+#[UsesClass(UTCDateTime::class)]
 class SettableUTCClockTest extends TestCase
 {
     private UTCClock&MockObject $innerClock;
