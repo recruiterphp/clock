@@ -31,7 +31,7 @@ class AcceleratedClockTest extends TestCase
         $this->assertEquals(
             $expected,
             $this->clock->now(),
-            'Clock should be advanced by 1 hour'
+            'Clock should be advanced by 1 hour',
         );
     }
 }
