@@ -1,4 +1,4 @@
-.PHONY: build up down test test-unit phpstan rector fix-cs install shell logs clean
+.PHONY: build up down test test-coverage phpstan rector fix-cs install shell logs clean
 
 # Build the Docker image
 build:
@@ -20,9 +20,9 @@ install:
 test: up
 	docker compose exec php vendor/bin/phpunit
 
-# Run unit tests specifically
-test-unit: up
-	docker compose exec php vendor/bin/phpunit tests/unit
+# Run unit tests with coverage
+test-coverage: up
+	docker compose exec -e XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-html var/coverage/
 
 phpstan: up
 	docker compose exec php vendor/bin/phpstan
