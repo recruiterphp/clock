@@ -10,8 +10,8 @@ use PHPUnit\Framework\TestCase;
 use Recruiter\Clock\FixedClock;
 
 #[CoversClass(ClockStopWatch::class)]
+#[CoversClass(StopWatchNotStartedException::class)]
 #[UsesClass(FixedClock::class)]
-#[UsesClass(StopWatchNotStartedException::class)]
 class ClockStopWatchTest extends TestCase
 {
     private FixedClock $clock;
