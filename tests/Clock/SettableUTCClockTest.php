@@ -76,4 +76,17 @@ class SettableUTCClockTest extends TestCase
             $this->clock->current(),
         );
     }
+
+    public function testElapseAdvancesTimeAndReturnsNewTime(): void
+    {
+        $initialTime = UTCDateTime::box('2015-02-01 10:00:00');
+        $this->clock->setCurrent($initialTime);
+
+        $interval = new \DateInterval('PT1H'); // 1 hour
+        $result = $this->clock->elapse($interval);
+
+        $expectedTime = UTCDateTime::box('2015-02-01 11:00:00');
+        $this->assertEquals($expectedTime, $result);
+        $this->assertEquals($expectedTime, $this->clock->current());
+    }
 }
