@@ -1,3 +1,5 @@
+*.cache
+.claude
+.idea
 /vendor/
 composer.lock
-*.cache
