@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
@@ -12,6 +13,7 @@ use Recruiter\Clock\PsrUTCClock;
 use Recruiter\DateTime\UTCDateTime;
 
 #[CoversClass(PsrUTCClock::class)]
+#[UsesClass(UTCDateTime::class)]
 class PsrUTCClockTest extends TestCase
 {
     /**
