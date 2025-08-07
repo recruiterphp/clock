@@ -46,4 +46,15 @@ class FixedClockTest extends TestCase
             'Clock should return the fixed time even if the mutable DateTime is modified',
         );
     }
+
+    public function testFromIso8601(): void
+    {
+        $clock = FixedClock::fromIso8601('2023-10-01T12:00:00Z');
+
+        $this->assertEquals(
+            new \DateTimeImmutable('2023-10-01 12:00:00', new \DateTimeZone('UTC')),
+            $clock->now(),
+            'Clock should return the fixed time from ISO 8601 string',
+        );
+    }
 }
