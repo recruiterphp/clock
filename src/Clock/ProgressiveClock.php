@@ -15,16 +15,8 @@ class ProgressiveClock implements Clock
 
     public function __construct(?\DateTimeInterface $start = null, ?\DateInterval $defaultInterval = null)
     {
-        if (null === $start) {
-            $start = new \DateTimeImmutable();
-        }
-        $this->now = \DateTimeImmutable::createFromInterface($start);
-
-        if (!$defaultInterval) {
-            $this->defaultInterval = new \DateInterval('PT1S');
-        } else {
-            $this->defaultInterval = $defaultInterval;
-        }
+        $this->now = $start ? \DateTimeImmutable::createFromInterface($start) : new \DateTimeImmutable();
+        $this->defaultInterval = $defaultInterval ?? new \DateInterval('PT1S');
     }
 
     public function now(): \DateTimeImmutable
