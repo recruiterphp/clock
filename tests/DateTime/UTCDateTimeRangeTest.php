@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 #[CoversClass(UTCDateTimeRange::class)]
 #[CoversClass(RangeIterator::class)]
+#[CoversClass(ComparisonOperator::class)]
 #[UsesClass(UTCDateTime::class)]
 class UTCDateTimeRangeTest extends TestCase
 {
@@ -247,7 +248,7 @@ class UTCDateTimeRangeTest extends TestCase
     public function testDirection(): void
     {
         $this->assertSame(
-            UTCDateTimeRange::ASCENDING,
+            Direction::Ascending,
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
                 UTCDateTime::box('2015-04-01 05:00:00.123456'),
@@ -255,7 +256,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
 
         $this->assertSame(
-            UTCDateTimeRange::ASCENDING,
+            Direction::Ascending,
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
@@ -263,7 +264,7 @@ class UTCDateTimeRangeTest extends TestCase
         );
 
         $this->assertSame(
-            UTCDateTimeRange::DESCENDING,
+            Direction::Descending,
             UTCDateTimeRange::fromIncludedToExcluded(
                 UTCDateTime::box('2015-04-01 05:00:00.123456'),
                 UTCDateTime::box('2015-01-01 03:00:00.123456'),
@@ -299,5 +300,26 @@ class UTCDateTimeRangeTest extends TestCase
             ),
             UTCDateTimeRange::fromMinimumToMaximum(),
         );
+    }
+
+    public function testToMethodReturnsToDateTime(): void
+    {
+        $from = UTCDateTime::box('2020-01-01');
+        $to = UTCDateTime::box('2020-12-31');
+        $range = UTCDateTimeRange::fromIncludedToIncluded($from, $to);
+
+        $this->assertEquals($to, $range->to());
+    }
+
+    public function testToOperatorMethodReturnsCorrectOperator(): void
+    {
+        $from = UTCDateTime::box('2020-01-01');
+        $to = UTCDateTime::box('2020-12-31');
+
+        $inclusiveRange = UTCDateTimeRange::fromIncludedToIncluded($from, $to);
+        $exclusiveRange = UTCDateTimeRange::fromIncludedToExcluded($from, $to);
+
+        $this->assertEquals(ComparisonOperator::LessThanOrEquals, $inclusiveRange->toOperator());
+        $this->assertEquals(ComparisonOperator::LessThan, $exclusiveRange->toOperator());
     }
 }

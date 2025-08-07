@@ -8,20 +8,14 @@ use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 
 final readonly class UTCDateTimeRange
 {
-    private const int LESS_THAN = 1;
-    private const int LESS_THAN_EQUALS = 2;
-
-    public const int ASCENDING = 1;
-    public const int DESCENDING = 2;
-
     public static function fromIncludedToExcluded(UTCDateTime $from, UTCDateTime $to): self
     {
-        return new self($from, $to, self::LESS_THAN);
+        return new self($from, $to, ComparisonOperator::LessThan);
     }
 
     public static function fromIncludedToIncluded(UTCDateTime $from, UTCDateTime $to): self
     {
-        return new self($from, $to, self::LESS_THAN_EQUALS);
+        return new self($from, $to, ComparisonOperator::LessThanOrEquals);
     }
 
     public static function fromMinimumToMaximum(): self
@@ -35,7 +29,7 @@ final readonly class UTCDateTimeRange
     private function __construct(
         private UTCDateTime $from,
         private UTCDateTime $to,
-        private int $toOperator,
+        private ComparisonOperator $toOperator,
     ) {
     }
 
@@ -46,28 +40,8 @@ final readonly class UTCDateTimeRange
     {
         return [
             '$gte' => $this->from->toMongoUTCDateTime(),
-            $this->mongoOperator($this->toOperator) => $this->to->toMongoUTCDateTime(),
+            $this->toOperator->toMongoOperator() => $this->to->toMongoUTCDateTime(),
         ];
-    }
-
-    private function mongoOperator(int $toOperator): string
-    {
-        return match ($toOperator) {
-            self::LESS_THAN => '$lt',
-            self::LESS_THAN_EQUALS => '$lte',
-            // won't be reached, makes the type checker happy
-            default => '',
-        };
-    }
-
-    private function toOperatorParenthesis(int $toOperator): string
-    {
-        return match ($toOperator) {
-            self::LESS_THAN => ')',
-            self::LESS_THAN_EQUALS => ']',
-            // won't be reached, makes the type checker happy
-            default => '',
-        };
     }
 
     /**
@@ -88,7 +62,7 @@ final readonly class UTCDateTimeRange
         return $this->to;
     }
 
-    public function toOperator(): int
+    public function toOperator(): ComparisonOperator
     {
         return $this->toOperator;
     }
@@ -128,14 +102,14 @@ final readonly class UTCDateTimeRange
         $debug .= $this->from->toIso8601WithMicroseconds();
         $debug .= ',';
         $debug .= $this->to->toIso8601WithMicroseconds();
-        $debug .= $this->toOperatorParenthesis($this->toOperator);
+        $debug .= $this->toOperator->toOperatorParenthesis();
 
         return ['ISO' => $debug];
     }
 
     public function reverse(): self
     {
-        if (self::LESS_THAN === $this->toOperator) {
+        if (ComparisonOperator::LessThan === $this->toOperator) {
             throw new \DomainException("can't reverse an open range");
         }
 
@@ -146,12 +120,12 @@ final readonly class UTCDateTimeRange
         );
     }
 
-    public function direction(): int
+    public function direction(): Direction
     {
         if ($this->from->lessThanOrEqual($this->to)) {
-            return self::ASCENDING;
+            return Direction::Ascending;
         } else {
-            return self::DESCENDING;
+            return Direction::Descending;
         }
     }
 
@@ -163,20 +137,8 @@ final readonly class UTCDateTimeRange
         return new RangeIterator(
             $this->from,
             $this->to,
-            $this->dateComparator(),
+            $this->toOperator->dateComparator(),
             $incrementer,
         );
-    }
-
-    /**
-     * @return \Closure(UTCDateTime,UTCDateTime): bool
-     */
-    private function dateComparator(): \Closure
-    {
-        return match ($this->toOperator) {
-            self::LESS_THAN => fn (UTCDateTime $x, UTCDateTime $y) => $x < $y,
-            // to make the type checker happy
-            default => fn (UTCDateTime $x, UTCDateTime $y) => $x <= $y,
-        };
     }
 }
