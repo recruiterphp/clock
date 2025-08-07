@@ -26,6 +26,12 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 CMD ["tail", "-f", "/dev/null"]
 
+FROM base AS xdebug
+
+# Install XDebug extension
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
 FROM base AS ci
 
 # Copy composer files
