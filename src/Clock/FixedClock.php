@@ -27,7 +27,7 @@ class FixedClock implements Clock
 
     public function now(): \DateTimeImmutable
     {
-        return clone $this->now;
+        return $this->now;
     }
 
     public function nowIs(\DateTimeInterface $time): void
