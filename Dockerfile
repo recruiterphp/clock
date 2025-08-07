@@ -26,7 +26,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 CMD ["tail", "-f", "/dev/null"]
 
-FROM base AS xdebug
+FROM base AS dev
 
 # Install XDebug extension
 RUN pecl install xdebug \

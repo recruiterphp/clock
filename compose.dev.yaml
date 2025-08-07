@@ -4,6 +4,6 @@ services:
       context: .
       args:
         - PHP_VERSION=${PHP_VERSION}
-      target: base
+      target: dev
     volumes:
       - .:/app
