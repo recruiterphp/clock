@@ -577,7 +577,7 @@ class UTCDateTimeTest extends TestCase
     {
         $this->assertEquals(
             '2016-01-01 11:34:56',
-            UTCDateTime::box('2016-01-01 12:34:56 Europe/Rome')->toSecondPrecision()
+            UTCDateTime::box('2016-01-01 12:34:56 Europe/Rome')->toSecondPrecision(),
         );
     }
 
