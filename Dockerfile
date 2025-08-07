@@ -1,6 +1,6 @@
 ARG PHP_VERSION=8.4
 
-FROM php:${PHP_VERSION}-cli as base
+FROM php:${PHP_VERSION}-cli AS base
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -26,7 +26,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 CMD ["tail", "-f", "/dev/null"]
 
-FROM base as ci
+FROM base AS ci
 
 # Copy composer files
 COPY composer.json composer.lock* ./
