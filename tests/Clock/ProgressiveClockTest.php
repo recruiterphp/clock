@@ -22,7 +22,7 @@ class ProgressiveClockTest extends TestCase
 
     public function testIsMonotonic(): void
     {
-        $this->assertGreaterThan($this->clock->current(), $this->clock->current());
+        $this->assertGreaterThan($this->clock->now(), $this->clock->now());
     }
 
     public function testForwardInTimeAdvancesTheClock(): void
