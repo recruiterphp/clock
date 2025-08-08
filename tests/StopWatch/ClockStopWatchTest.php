@@ -7,14 +7,14 @@ namespace Recruiter\StopWatch;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
-use Recruiter\Clock\FixedClock;
+use Recruiter\Clock\ManualClock;
 
 #[CoversClass(ClockStopWatch::class)]
 #[CoversClass(StopWatchNotStartedException::class)]
-#[UsesClass(FixedClock::class)]
+#[UsesClass(ManualClock::class)]
 class ClockStopWatchTest extends TestCase
 {
-    private FixedClock $clock;
+    private ManualClock $clock;
     private ClockStopWatch $stopWatch;
 
     /**
@@ -22,7 +22,7 @@ class ClockStopWatchTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->clock = FixedClock::fromIso8601('2015-02-03 00:12:43');
+        $this->clock = ManualClock::fromIso8601('2015-02-03 00:12:43');
         $this->stopWatch = new ClockStopWatch($this->clock);
     }
 
