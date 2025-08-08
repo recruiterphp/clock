@@ -37,6 +37,20 @@ class SettableClockTest extends TestCase
         );
     }
 
+    public function testItAdvancesTimeByDateInterval(): void
+    {
+        $initialTime = new \DateTime('2023-10-01 12:00:00');
+        $clock = new SettableClock($initialTime);
+
+        $clock->advance(new \DateInterval('PT1H')); // 1 hour
+
+        $this->assertEquals(
+            new \DateTimeImmutable('2023-10-01 13:00:00'),
+            $clock->now(),
+            'Clock should advance by the specified seconds',
+        );
+    }
+
     public function testItCanAdvanceMultipleTimes(): void
     {
         $initialTime = new \DateTime('2023-10-01 12:00:00');
