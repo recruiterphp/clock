@@ -7,9 +7,11 @@ namespace Recruiter\Clock;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use Recruiter\DateTime\UTCDateTime;
+use Recruiter\StopWatch\ClockStopWatch;
 
 #[CoversClass(ManualClock::class)]
 #[UsesClass(PsrMicrotimeClock::class)]
+#[UsesClass(ClockStopWatch::class)]
 #[UsesClass(PsrUTCClock::class)]
 #[UsesClass(UTCDateTime::class)]
 class ManualClockTest extends ClockTestCase
@@ -140,6 +142,18 @@ class ManualClockTest extends ClockTestCase
             $clock->now(),
             'Clock should convert fixed time to UTC correctly',
         );
+    }
+
+    public function testStopWatch(): void
+    {
+        $clock = new ManualClock(new \DateTimeImmutable('2023-10-01 12:00:00'));
+        $stopwatch = $clock->stopWatch();
+
+        $stopwatch->start();
+        $clock->advance(2);
+        $elapsed = $stopwatch->elapsedSeconds();
+
+        $this->assertEquals(2, $elapsed, 'Stopwatch should measure elapsed time correctly');
     }
 
     public function testSleep(): void
