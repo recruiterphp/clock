@@ -5,31 +5,28 @@ declare(strict_types=1);
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use Recruiter\DateTime\UTCDateTime;
-use Recruiter\UTCClock;
+use Symfony\Component\Clock\ClockInterface;
 
-#[CoversClass(DelayedUTCClock::class)]
-#[UsesClass(UTCDateTime::class)]
-class DelayedUTCClockTest extends TestCase
+#[CoversClass(DelayedClock::class)]
+class DelayedClockTest extends TestCase
 {
     /**
      * @throws Exception
      */
     public function testGivesATimeAFewSecondsInThePast(): void
     {
-        $original = $this->createMock(UTCClock::class);
-        $clock = new DelayedUTCClock($original, 10);
+        $original = $this->createMock(ClockInterface::class);
+        $clock = new DelayedClock($original, 10);
 
         $original->expects($this->once())
                  ->method('now')
-                 ->willReturn(UTCDateTime::fromTimestamp(10000018))
+                 ->willReturn(\DateTimeImmutable::createFromFormat('U', '10000018'))
         ;
 
         $this->assertEquals(
-            UTCDateTime::fromTimestamp(10000008),
+            \DateTimeImmutable::createFromFormat('U', '10000008'),
             $clock->now(),
         );
     }
