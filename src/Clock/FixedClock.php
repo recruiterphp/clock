@@ -34,11 +34,17 @@ class FixedClock implements Clock
         $this->now = \DateTimeImmutable::createFromInterface($time);
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     */
     public function sleep(float|int $seconds): void
     {
         $this->now = $this->now->modify(sprintf('+%f seconds', $seconds));
     }
 
+    /**
+     * @throws \DateInvalidTimeZoneException
+     */
     public function withTimeZone(\DateTimeZone|string $timezone): static
     {
         if (\is_string($timezone)) {

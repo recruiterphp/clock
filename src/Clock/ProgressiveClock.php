@@ -37,11 +37,17 @@ class ProgressiveClock implements Clock
         return $this;
     }
 
+    /**
+     * @throws \DateMalformedStringException
+     */
     public function sleep(float|int $seconds): void
     {
         $this->now = $this->now->modify(sprintf('+%f seconds', $seconds));
     }
 
+    /**
+     * @throws \DateInvalidTimeZoneException
+     */
     public function withTimeZone(\DateTimeZone|string $timezone): static
     {
         if (\is_string($timezone)) {

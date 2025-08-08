@@ -31,6 +31,9 @@ class AcceleratedClock implements Clock
         $this->now = $this->now->modify(sprintf('+%f seconds', $seconds));
     }
 
+    /**
+     * @throws \DateInvalidTimeZoneException
+     */
     public function withTimeZone(\DateTimeZone|string $timezone): static
     {
         if (\is_string($timezone)) {
