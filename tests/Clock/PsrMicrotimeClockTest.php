@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Clock;
+namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
