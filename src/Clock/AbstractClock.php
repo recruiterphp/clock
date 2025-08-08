@@ -19,9 +19,4 @@ abstract class AbstractClock implements Clock
     {
         return new PsrMicrotimeClock($this);
     }
-
-    public function current(): \DateTime
-    {
-        return \DateTime::createFromImmutable($this->now());
-    }
 }

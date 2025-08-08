@@ -8,11 +8,6 @@ use Symfony\Component\Clock\ClockInterface;
 
 interface Clock extends ClockInterface
 {
-    /**
-     * @deprecated Use now() instead
-     */
-    public function current(): \DateTime;
-
     public function asUTC(): UTCClock;
 
     public function asMicrotime(): MicrotimeClock;
