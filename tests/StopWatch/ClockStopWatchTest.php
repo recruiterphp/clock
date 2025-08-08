@@ -53,4 +53,17 @@ class ClockStopWatchTest extends TestCase
         $this->assertEqualsWithDelta(6000.0, $this->stopWatch->elapsedMilliseconds(), 0.1);
         $this->assertEqualsWithDelta(6000000.0, $this->stopWatch->elapsedMicroseconds(), 0.1);
     }
+
+    /**
+     * @throws \DateMalformedStringException
+     */
+    public function testElapseWithMicroseconds(): void
+    {
+        $this->stopWatch->start();
+        $this->clock->sleep(7200.123456);
+
+        $this->assertEqualsWithDelta(7200.123456, $this->stopWatch->elapsedSeconds(), 0.000001);
+        $this->assertEqualsWithDelta(7200123.456, $this->stopWatch->elapsedMilliseconds(), 0.001);
+        $this->assertEqualsWithDelta(7200123456.0, $this->stopWatch->elapsedMicroseconds(), 1.0);
+    }
 }

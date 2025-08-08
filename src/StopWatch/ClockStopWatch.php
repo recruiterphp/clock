@@ -25,13 +25,7 @@ class ClockStopWatch implements StopWatch
      */
     public function elapsedSeconds(): float
     {
-        if (!$this->start) {
-            throw new StopWatchNotStartedException();
-        }
-
-        $now = $this->clock->now();
-
-        return (float) $now->diff($this->start)->s;
+        return $this->elapsedMicroseconds() / 1_000_000;
     }
 
     /**
@@ -39,11 +33,17 @@ class ClockStopWatch implements StopWatch
      */
     public function elapsedMilliseconds(): float
     {
-        return $this->elapsedSeconds() * 1000;
+        return $this->elapsedMicroseconds() / 1_000;
     }
 
     public function elapsedMicroseconds(): float
     {
-        return $this->elapsedMilliseconds() * 1000;
+        if (!$this->start) {
+            throw new StopWatchNotStartedException();
+        }
+
+        $now = $this->clock->now();
+
+        return $now->format('Uu') - (float)$this->start->format('Uu');
     }
 }
