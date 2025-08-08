@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Recruiter\StopWatch;
 
-class StopWatchNotStartedException extends \Exception
+class StopWatchNotStartedException extends \LogicException
 {
     public function __construct()
     {
