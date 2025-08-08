@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Recruiter\StopWatch;
 
-use Recruiter\Clock;
+use Psr\Clock\ClockInterface;
 use Recruiter\StopWatch;
 
 class ClockStopWatch implements StopWatch
 {
-    private ?\DateTime $start = null;
+    private ?\DateTimeImmutable $start = null;
 
-    public function __construct(private readonly Clock $clock)
+    public function __construct(private readonly ClockInterface $clock)
     {
     }
 
     public function start(): void
     {
-        $this->start = $this->clock->current();
+        $this->start = $this->clock->now();
     }
 
     /**
@@ -29,7 +29,7 @@ class ClockStopWatch implements StopWatch
             throw new StopWatchNotStartedException();
         }
 
-        $now = $this->clock->current();
+        $now = $this->clock->now();
 
         return (float) $now->diff($this->start)->s;
     }
