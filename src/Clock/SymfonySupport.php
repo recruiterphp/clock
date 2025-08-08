@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
+use Symfony\Component\Clock\ClockInterface;
+
 trait SymfonySupport
 {
-    private \DateTimeImmutable $now;
+    private ClockInterface $wrapped;
 
     public function sleep(float|int $seconds): void
     {
-        $this->now = $this->now->modify(sprintf('+%f seconds', $seconds));
+        $this->wrapped->sleep($seconds);
     }
 
+    /**
+     * @throws \DateInvalidTimeZoneException
+     */
     public function withTimeZone(\DateTimeZone|string $timezone): static
     {
-        if (\is_string($timezone)) {
-            $timezone = new \DateTimeZone($timezone);
-        }
-
         $clone = clone $this;
-        $clone->now = $clone->now->setTimezone($timezone);
+        $clone->wrapped = $this->wrapped->withTimeZone($timezone);
 
         return $clone;
     }

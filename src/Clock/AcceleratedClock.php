@@ -4,42 +4,25 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
+use Symfony\Component\Clock\MockClock;
+
 class AcceleratedClock extends AbstractClock
 {
     use SymfonySupport;
 
     public function __construct(\DateTimeInterface $now)
     {
-        $this->now = \DateTimeImmutable::createFromInterface($now);
+        $now = \DateTimeImmutable::createFromInterface($now);
+        $this->wrapped = new MockClock($now);
     }
 
     public function now(): \DateTimeImmutable
     {
-        return $this->now;
+        return $this->wrapped->now();
     }
 
     public function advance(\DateInterval $interval): void
     {
-        $this->now = $this->now->add($interval);
-    }
-
-    public function sleep(float|int $seconds): void
-    {
-        $this->now = $this->now->modify(sprintf('+%f seconds', $seconds));
-    }
-
-    /**
-     * @throws \DateInvalidTimeZoneException
-     */
-    public function withTimeZone(\DateTimeZone|string $timezone): static
-    {
-        if (\is_string($timezone)) {
-            $timezone = new \DateTimeZone($timezone);
-        }
-
-        $clone = clone $this;
-        $clone->now = $clone->now->setTimezone($timezone);
-
-        return $clone;
+        $this->wrapped = new MockClock($this->now()->add($interval));
     }
 }
