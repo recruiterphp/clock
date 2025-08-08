@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Recruiter\Clock;
 use Symfony\Component\Clock\NativeClock;
 
-class SystemClock implements Clock
+class SystemClock extends AbstractClock
 {
-    use BackwardSupport;
-
     private NativeClock $wrapped;
 
     /**

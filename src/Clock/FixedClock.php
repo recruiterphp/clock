@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Recruiter\Clock;
 use Symfony\Component\Clock\MockClock;
 
-class FixedClock implements Clock
+class FixedClock extends AbstractClock
 {
-    use BackwardSupport;
-
     private MockClock $wrapped;
 
     /**
