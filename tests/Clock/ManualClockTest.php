@@ -6,24 +6,20 @@ namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
-use PHPUnit\Framework\TestCase;
-use Recruiter\Clock\ManualClock;
-use Recruiter\Clock\PsrMicrotimeClock;
-use Recruiter\Clock\PsrUTCClock;
 use Recruiter\DateTime\UTCDateTime;
 
 #[CoversClass(ManualClock::class)]
 #[UsesClass(PsrMicrotimeClock::class)]
 #[UsesClass(PsrUTCClock::class)]
 #[UsesClass(UTCDateTime::class)]
-class ManualClockTest extends TestCase
+class ManualClockTest extends ClockTestCase
 {
     public function testItReturnsInitialTime(): void
     {
         $initialTime = new \DateTime('2023-10-01 12:00:00');
         $clock = new ManualClock($initialTime);
 
-        $this->assertEquals(
+        $this->assertDateTimeEquals(
             \DateTimeImmutable::createFromMutable($initialTime),
             $clock->now(),
             'Clock should return the initial time',
@@ -34,7 +30,7 @@ class ManualClockTest extends TestCase
     {
         $clock = new ManualClock(new \DateTimeImmutable('2023-10-01 12:00:00'));
 
-        $this->assertEquals(
+        $this->assertDateTimeEquals(
             $clock->now(),
             $clock->now(),
             'Clock should return the same fixed time on subsequent calls',
@@ -47,7 +43,7 @@ class ManualClockTest extends TestCase
         $clock = new ManualClock($mutableTime);
         $mutableTime->modify('+1 hour');
 
-        $this->assertEquals(
+        $this->assertDateTimeEquals(
             new \DateTimeImmutable('2023-10-01 12:00:00'),
             $clock->now(),
             'Clock should return the fixed time even if the mutable DateTime is modified',
@@ -58,8 +54,8 @@ class ManualClockTest extends TestCase
     {
         $clock = ManualClock::fromIso8601('2023-10-01T12:00:00Z');
 
-        $this->assertEquals(
-            new \DateTimeImmutable('2023-10-01 12:00:00', new \DateTimeZone('UTC')),
+        $this->assertDateTimeEquals(
+            new \DateTimeImmutable('2023-10-01 12:00:00', new \DateTimeZone('Z')),
             $clock->now(),
             'Clock should return the fixed time from ISO 8601 string',
         );
@@ -72,7 +68,7 @@ class ManualClockTest extends TestCase
 
         $clock->advance(3600); // 1 hour
 
-        $this->assertEquals(
+        $this->assertDateTimeEquals(
             new \DateTimeImmutable('2023-10-01 13:00:00'),
             $clock->now(),
             'Clock should advance by the specified seconds',
@@ -86,7 +82,7 @@ class ManualClockTest extends TestCase
 
         $clock->advance(new \DateInterval('PT1H')); // 1 hour
 
-        $this->assertEquals(
+        $this->assertDateTimeEquals(
             new \DateTimeImmutable('2023-10-01 13:00:00'),
             $clock->now(),
             'Clock should advance by the specified interval',
@@ -101,7 +97,7 @@ class ManualClockTest extends TestCase
         $clock->advance(1800); // 30 minutes
         $clock->advance(1800); // another 30 minutes
 
-        $this->assertEquals(
+        $this->assertDateTimeEquals(
             new \DateTimeImmutable('2023-10-01 13:00:00'),
             $clock->now(),
             'Clock should advance correctly with multiple calls',
@@ -115,7 +111,7 @@ class ManualClockTest extends TestCase
 
         $clock->nowIs($newTime);
 
-        $this->assertEquals(
+        $this->assertDateTimeEquals(
             $newTime,
             $clock->now(),
             'Clock should jump to the specified time',
@@ -127,7 +123,7 @@ class ManualClockTest extends TestCase
         $fixedTime = new \DateTimeImmutable('2023-10-01 12:00:00.123456');
         $clock = new ManualClock($fixedTime)->asMicrotime();
 
-        $this->assertEquals(
+        $this->assertSame(
             1696161600.123456,
             $clock->now(),
             'Clock should convert fixed time to microtime correctly',
@@ -143,6 +139,31 @@ class ManualClockTest extends TestCase
             UTCDateTime::fromString('2023-10-01 10:00:00'),
             $clock->now(),
             'Clock should convert fixed time to UTC correctly',
+        );
+    }
+
+    public function testSleep(): void
+    {
+        $clock = new ManualClock(new \DateTimeImmutable('2023-10-01 12:00:00'));
+        $clock->sleep(1.5);
+        $expectedTime = new \DateTimeImmutable('2023-10-01 12:00:01.500000');
+
+        $this->assertDateTimeEquals(
+            $expectedTime,
+            $clock->now(),
+            'Clock should advance time by the specified sleep duration',
+        );
+    }
+
+    public function testWithTimeZone(): void
+    {
+        $clock = new ManualClock(new \DateTimeImmutable('2023-10-01 12:00:00', new \DateTimeZone('Europe/Berlin')));
+        $newClock = $clock->withTimeZone('America/New_York');
+
+        $this->assertDateTimeEquals(
+            new \DateTimeImmutable('2023-10-01 06:00:00', new \DateTimeZone('America/New_York')),
+            $newClock->now(),
+            'Clock should return time in the new timezone',
         );
     }
 }

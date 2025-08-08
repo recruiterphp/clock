@@ -5,28 +5,18 @@ declare(strict_types=1);
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Clock\ClockInterface;
+use Symfony\Component\Clock\MockClock;
 
 #[CoversClass(DelayedClock::class)]
-class DelayedClockTest extends TestCase
+class DelayedClockTest extends ClockTestCase
 {
-    /**
-     * @throws Exception
-     */
     public function testGivesATimeAFewSecondsInThePast(): void
     {
-        $original = $this->createMock(ClockInterface::class);
+        $original = new MockClock('2025-01-02T12:34:56.789012+00:00');
         $clock = new DelayedClock($original, 10);
 
-        $original->expects($this->once())
-                 ->method('now')
-                 ->willReturn(\DateTimeImmutable::createFromFormat('U', '10000018'))
-        ;
-
-        $this->assertEquals(
-            \DateTimeImmutable::createFromFormat('U', '10000008'),
+        $this->assertDateTimeEquals(
+            new \DateTimeImmutable('2025-01-02T12:34:46.789012+00:00'),
             $clock->now(),
         );
     }

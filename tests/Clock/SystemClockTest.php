@@ -6,7 +6,6 @@ namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Recruiter\Clock\SystemClock;
 
 #[CoversClass(SystemClock::class)]
 class SystemClockTest extends TestCase

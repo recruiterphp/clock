@@ -9,7 +9,6 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
-use Recruiter\Clock\PsrUTCClock;
 use Recruiter\DateTime\UTCDateTime;
 
 #[CoversClass(PsrUTCClock::class)]
