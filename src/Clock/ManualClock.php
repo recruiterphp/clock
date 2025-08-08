@@ -6,7 +6,7 @@ namespace Recruiter\Clock;
 
 use Symfony\Component\Clock\MockClock;
 
-class FixedClock extends AbstractClock
+class ManualClock extends AbstractClock
 {
     use SymfonySupport;
 
@@ -31,5 +31,15 @@ class FixedClock extends AbstractClock
     public function nowIs(\DateTimeInterface $time): void
     {
         $this->wrapped = new MockClock(\DateTimeImmutable::createFromInterface($time));
+    }
+
+    public function advance(int|\DateInterval $secondsOrInterval): void
+    {
+        if (!$secondsOrInterval instanceof \DateInterval) {
+            $secondsOrInterval = new \DateInterval("PT{$secondsOrInterval}S");
+        }
+
+        $now = $this->now()->add($secondsOrInterval);
+        $this->wrapped = new MockClock($now);
     }
 }
