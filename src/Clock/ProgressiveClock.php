@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Recruiter\Clock;
-
-class ProgressiveClock implements Clock
+class ProgressiveClock extends AbstractClock
 {
-    use BackwardSupport;
     use SymfonySupport;
     private readonly \DateInterval $defaultInterval;
 

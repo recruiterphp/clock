@@ -44,6 +44,6 @@ class ClockStopWatch implements StopWatch
 
         $now = $this->clock->now();
 
-        return $now->format('Uu') - (float)$this->start->format('Uu');
+        return $now->format('Uu') - (float) $this->start->format('Uu');
     }
 }

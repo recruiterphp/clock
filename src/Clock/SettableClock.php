@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Recruiter\Clock;
-
-class SettableClock implements Clock
+class SettableClock extends AbstractClock
 {
-    use BackwardSupport;
     use SymfonySupport;
 
     public function __construct(\DateTimeInterface $now)
