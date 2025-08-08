@@ -13,6 +13,9 @@ class SystemClock implements Clock
 
     private NativeClock $wrapped;
 
+    /**
+     * @throws \DateInvalidTimeZoneException
+     */
     public function __construct(\DateTimeZone|string|null $timezone = null)
     {
         $this->wrapped = new NativeClock($timezone);
@@ -28,6 +31,9 @@ class SystemClock implements Clock
         $this->wrapped->sleep($seconds);
     }
 
+    /**
+     * @throws \DateInvalidTimeZoneException
+     */
     public function withTimeZone(\DateTimeZone|string $timezone): static
     {
         $clone = clone $this;
