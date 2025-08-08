@@ -14,7 +14,7 @@ final readonly class PsrUTCClock implements UTCClock
     {
     }
 
-    public function current(): UTCDateTime
+    public function now(): UTCDateTime
     {
         return UTCDateTime::box($this->wrapped->now());
     }

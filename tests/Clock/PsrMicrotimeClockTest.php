@@ -28,7 +28,7 @@ class PsrMicrotimeClockTest extends TestCase
 
         $this->assertEquals(
             626637420.123456,
-            $clock->current(),
+            $clock->now(),
         );
     }
 }

@@ -9,5 +9,5 @@ interface MicrotimeClock
     /**
      * @see microtime()
      */
-    public function current(): float;
+    public function now(): float;
 }

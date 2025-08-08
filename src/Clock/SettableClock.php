@@ -41,7 +41,6 @@ class SettableClock extends AbstractClock
         $this->enabledClock()->sleep($seconds);
     }
 
-
     private function enabledClock(): ClockInterface
     {
         return $this->fixed ?? $this->wrapped;
