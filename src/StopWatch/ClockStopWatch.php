@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Recruiter\StopWatch;
 
 use Psr\Clock\ClockInterface;
-use Recruiter\StopWatch;
 
 class ClockStopWatch implements StopWatch
 {

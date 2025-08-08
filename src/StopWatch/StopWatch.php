@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Recruiter;
+namespace Recruiter\StopWatch;
 
 interface StopWatch
 {
     public function start(): void;
 
     /**
-     * @throws StopWatch\StopWatchNotStartedException
+     * @throws StopWatchNotStartedException
      */
     public function elapsedSeconds(): float;
 
     /**
-     * @throws StopWatch\StopWatchNotStartedException
+     * @throws StopWatchNotStartedException
      */
     public function elapsedMilliseconds(): float;
 
     /**
-     * @throws StopWatch\StopWatchNotStartedException
+     * @throws StopWatchNotStartedException
      */
     public function elapsedMicroseconds(): float;
 }

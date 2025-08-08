@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Recruiter\Clock;
 
 use Psr\Clock\ClockInterface;
-use Recruiter\MicrotimeClock;
 
 final readonly class PsrMicrotimeClock implements MicrotimeClock
 {
