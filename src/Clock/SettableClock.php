@@ -9,8 +9,7 @@ use Recruiter\Clock;
 class SettableClock implements Clock
 {
     use BackwardSupport;
-
-    private \DateTimeImmutable $now;
+    use SymfonySupport;
 
     public function __construct(\DateTimeInterface $now)
     {
