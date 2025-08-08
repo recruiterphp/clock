@@ -8,7 +8,7 @@ use Symfony\Component\Clock\NativeClock;
 
 class SystemClock extends AbstractClock
 {
-    private NativeClock $wrapped;
+    use SymfonySupport;
 
     /**
      * @throws \DateInvalidTimeZoneException
@@ -21,21 +21,5 @@ class SystemClock extends AbstractClock
     public function now(): \DateTimeImmutable
     {
         return $this->wrapped->now();
-    }
-
-    public function sleep(float|int $seconds): void
-    {
-        $this->wrapped->sleep($seconds);
-    }
-
-    /**
-     * @throws \DateInvalidTimeZoneException
-     */
-    public function withTimeZone(\DateTimeZone|string $timezone): static
-    {
-        $clone = clone $this;
-        $clone->wrapped = $this->wrapped->withTimeZone($timezone);
-
-        return $clone;
     }
 }

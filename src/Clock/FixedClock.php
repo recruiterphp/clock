@@ -8,7 +8,7 @@ use Symfony\Component\Clock\MockClock;
 
 class FixedClock extends AbstractClock
 {
-    private MockClock $wrapped;
+    use SymfonySupport;
 
     /**
      * @throws \DateMalformedStringException
@@ -31,21 +31,5 @@ class FixedClock extends AbstractClock
     public function nowIs(\DateTimeInterface $time): void
     {
         $this->wrapped = new MockClock(\DateTimeImmutable::createFromInterface($time));
-    }
-
-    public function sleep(float|int $seconds): void
-    {
-        $this->wrapped->sleep($seconds);
-    }
-
-    /**
-     * @throws \DateInvalidTimeZoneException
-     */
-    public function withTimeZone(\DateTimeZone|string $timezone): static
-    {
-        $clone = clone $this;
-        $clone->wrapped = $this->wrapped->withTimeZone($timezone);
-
-        return $clone;
     }
 }
