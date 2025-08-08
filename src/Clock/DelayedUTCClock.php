@@ -13,11 +13,11 @@ readonly class DelayedUTCClock implements UTCClock
     {
     }
 
-    public function current(): UTCDateTime
+    public function now(): UTCDateTime
     {
         return $this
             ->originalClock
-            ->current()
+            ->now()
             ->subtractSeconds($this->delayInSeconds)
         ;
     }

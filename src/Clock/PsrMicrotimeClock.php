@@ -13,7 +13,7 @@ final readonly class PsrMicrotimeClock implements MicrotimeClock
     {
     }
 
-    public function current(): float
+    public function now(): float
     {
         return floatval($this->wrapped->now()->format('U.u'));
     }

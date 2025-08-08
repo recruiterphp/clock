@@ -31,7 +31,7 @@ class PsrUTCClockTest extends TestCase
 
         $this->assertEquals(
             UTCDateTime::fromTimestamp(626637420),
-            $clock->current(),
+            $clock->now(),
         );
     }
 }

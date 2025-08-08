@@ -24,13 +24,13 @@ class DelayedUTCClockTest extends TestCase
         $clock = new DelayedUTCClock($original, 10);
 
         $original->expects($this->once())
-                 ->method('current')
+                 ->method('now')
                  ->willReturn(UTCDateTime::fromTimestamp(10000018))
         ;
 
         $this->assertEquals(
             UTCDateTime::fromTimestamp(10000008),
-            $clock->current(),
+            $clock->now(),
         );
     }
 }

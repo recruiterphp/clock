@@ -129,7 +129,7 @@ class ManualClockTest extends TestCase
 
         $this->assertEquals(
             1696161600.123456,
-            $clock->current(),
+            $clock->now(),
             'Clock should convert fixed time to microtime correctly',
         );
     }
@@ -141,7 +141,7 @@ class ManualClockTest extends TestCase
 
         $this->assertEquals(
             UTCDateTime::fromString('2023-10-01 10:00:00'),
-            $clock->current(),
+            $clock->now(),
             'Clock should convert fixed time to UTC correctly',
         );
     }
