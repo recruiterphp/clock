@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Clock\ClockInterface;
-use Recruiter\Clock\PsrMicrotimeClock;
 
 #[CoversClass(PsrMicrotimeClock::class)]
 class PsrMicrotimeClockTest extends TestCase

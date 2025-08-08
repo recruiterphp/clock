@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\TestCase;
-use Recruiter\Clock\ProgressiveClock;
 
 #[CoversClass(ProgressiveClock::class)]
-class ProgressiveClockTest extends TestCase
+class ProgressiveClockTest extends ClockTestCase
 {
     private \DateTime $start;
     private ProgressiveClock $clock;
@@ -33,6 +31,6 @@ class ProgressiveClockTest extends TestCase
         $after = $this->clock->now();
 
         $expected = $before->add($interval)->add(new \DateInterval('PT1S')); // +1s because now() advances by default
-        $this->assertEquals($expected, $after);
+        $this->assertDateTimeEquals($expected, $after);
     }
 }
