@@ -6,6 +6,7 @@ namespace Recruiter\Clock;
 
 use Recruiter\Clock;
 use Recruiter\MicrotimeClock;
+use Recruiter\StopWatch;
 use Recruiter\UTCClock;
 
 abstract class AbstractClock implements Clock
@@ -18,5 +19,10 @@ abstract class AbstractClock implements Clock
     public function asMicrotime(): MicrotimeClock
     {
         return new PsrMicrotimeClock($this);
+    }
+
+    public function stopWatch(): StopWatch
+    {
+        return new StopWatch\ClockStopWatch($this);
     }
 }

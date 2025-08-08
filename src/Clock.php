@@ -11,4 +11,6 @@ interface Clock extends ClockInterface
     public function asUTC(): UTCClock;
 
     public function asMicrotime(): MicrotimeClock;
+
+    public function stopWatch(): StopWatch;
 }
