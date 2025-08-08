@@ -15,9 +15,13 @@ class SettableClock extends AbstractClock
         $this->wrapped = new MockClock(\DateTimeImmutable::createFromInterface($now));
     }
 
-    public function advance(int $seconds): void
+    public function advance(int|\DateInterval $secondsOrInterval): void
     {
-        $now = $this->now()->add(new \DateInterval("PT{$seconds}S"));
+        if (!$secondsOrInterval instanceof \DateInterval) {
+            $secondsOrInterval = new \DateInterval("PT{$secondsOrInterval}S");
+        }
+
+        $now = $this->now()->add($secondsOrInterval);
         $this->wrapped = new MockClock($now);
     }
 
