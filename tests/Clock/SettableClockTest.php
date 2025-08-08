@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Recruiter\Clock;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Clock\ClockInterface;
 
 #[CoversClass(SettableClock::class)]
+#[UsesClass(ManualClock::class)]
 class SettableClockTest extends TestCase
 {
     private ClockInterface&MockObject $innerClock;
