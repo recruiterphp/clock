@@ -9,8 +9,7 @@ use Recruiter\Clock;
 class FixedClock implements Clock
 {
     use BackwardSupport;
-
-    private \DateTimeImmutable $now;
+    use SymfonySupport;
 
     /**
      * @throws \DateMalformedStringException

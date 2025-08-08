@@ -9,8 +9,7 @@ use Recruiter\Clock;
 class ProgressiveClock implements Clock
 {
     use BackwardSupport;
-
-    private \DateTimeImmutable $now;
+    use SymfonySupport;
     private readonly \DateInterval $defaultInterval;
 
     public function __construct(?\DateTimeInterface $start = null, ?\DateInterval $defaultInterval = null)

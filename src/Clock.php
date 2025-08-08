@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Recruiter;
 
-use Psr\Clock\ClockInterface;
+use Symfony\Component\Clock\ClockInterface;
 
 interface Clock extends ClockInterface
 {
