@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Recruiter\Clock;
 
 use Recruiter\Clock;
+use Symfony\Component\Clock\MockClock;
 
 class FixedClock implements Clock
 {
     use BackwardSupport;
-    use SymfonySupport;
+
+    private MockClock $wrapped;
 
     /**
      * @throws \DateMalformedStringException
@@ -26,20 +28,17 @@ class FixedClock implements Clock
 
     public function now(): \DateTimeImmutable
     {
-        return $this->now;
+        return $this->wrapped->now();
     }
 
     public function nowIs(\DateTimeInterface $time): void
     {
-        $this->now = \DateTimeImmutable::createFromInterface($time);
+        $this->wrapped = new MockClock(\DateTimeImmutable::createFromInterface($time));
     }
 
-    /**
-     * @throws \DateMalformedStringException
-     */
     public function sleep(float|int $seconds): void
     {
-        $this->now = $this->now->modify(sprintf('+%f seconds', $seconds));
+        $this->wrapped->sleep($seconds);
     }
 
     /**
@@ -47,12 +46,8 @@ class FixedClock implements Clock
      */
     public function withTimeZone(\DateTimeZone|string $timezone): static
     {
-        if (\is_string($timezone)) {
-            $timezone = new \DateTimeZone($timezone);
-        }
-
         $clone = clone $this;
-        $clone->now = $clone->now->setTimezone($timezone);
+        $clone->wrapped = $this->wrapped->withTimeZone($timezone);
 
         return $clone;
     }

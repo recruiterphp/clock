@@ -27,7 +27,7 @@ class FixedClockTest extends TestCase
     {
         $clock = new FixedClock(new \DateTimeImmutable('2023-10-01 12:00:00'));
 
-        $this->assertSame(
+        $this->assertEquals(
             $clock->now(),
             $clock->now(),
             'Clock should return the same fixed time on subsequent calls',
