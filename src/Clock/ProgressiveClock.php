@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
+use Symfony\Component\Clock\MockClock;
+
 class ProgressiveClock extends AbstractClock
 {
     use SymfonySupport;
@@ -11,17 +13,18 @@ class ProgressiveClock extends AbstractClock
 
     public function __construct(?\DateTimeInterface $start = null, ?\DateInterval $defaultInterval = null)
     {
-        $this->now = $start ? \DateTimeImmutable::createFromInterface($start) : new \DateTimeImmutable();
+        $now = $start ? \DateTimeImmutable::createFromInterface($start) : new \DateTimeImmutable();
+        $this->wrapped = new MockClock($now);
         $this->defaultInterval = $defaultInterval ?? new \DateInterval('PT1S');
     }
 
     public function now(): \DateTimeImmutable
     {
-        $toReturn = $this->now;
+        $now = $this->wrapped->now();
 
-        $this->now = $this->now->add($this->defaultInterval);
+        $this->forwardInTime($this->defaultInterval);
 
-        return $toReturn;
+        return $now;
     }
 
     /**
@@ -29,31 +32,9 @@ class ProgressiveClock extends AbstractClock
      */
     public function forwardInTime(\DateInterval $interval): static
     {
-        $this->now = $this->now->add($interval);
+        $newTime = $this->wrapped->now()->add($interval);
+        $this->wrapped = new MockClock($newTime);
 
         return $this;
-    }
-
-    /**
-     * @throws \DateMalformedStringException
-     */
-    public function sleep(float|int $seconds): void
-    {
-        $this->now = $this->now->modify(sprintf('+%f seconds', $seconds));
-    }
-
-    /**
-     * @throws \DateInvalidTimeZoneException
-     */
-    public function withTimeZone(\DateTimeZone|string $timezone): static
-    {
-        if (\is_string($timezone)) {
-            $timezone = new \DateTimeZone($timezone);
-        }
-
-        $clone = clone $this;
-        $clone->now = $clone->now->setTimezone($timezone);
-
-        return $clone;
     }
 }
