@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Recruiter;
+namespace Recruiter\Clock;
 
+use Recruiter\StopWatch\StopWatch;
 use Symfony\Component\Clock\ClockInterface;
 
 interface Clock extends ClockInterface

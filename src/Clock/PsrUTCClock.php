@@ -6,7 +6,6 @@ namespace Recruiter\Clock;
 
 use Psr\Clock\ClockInterface;
 use Recruiter\DateTime\UTCDateTime;
-use Recruiter\UTCClock;
 
 final readonly class PsrUTCClock implements UTCClock
 {

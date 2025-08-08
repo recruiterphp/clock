@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
-use Recruiter\Clock;
-use Recruiter\MicrotimeClock;
-use Recruiter\StopWatch;
-use Recruiter\UTCClock;
+use Recruiter\StopWatch\ClockStopWatch;
 
 abstract class AbstractClock implements Clock
 {
@@ -21,8 +18,8 @@ abstract class AbstractClock implements Clock
         return new PsrMicrotimeClock($this);
     }
 
-    public function stopWatch(): StopWatch
+    public function stopWatch(): ClockStopWatch
     {
-        return new StopWatch\ClockStopWatch($this);
+        return new ClockStopWatch($this);
     }
 }
