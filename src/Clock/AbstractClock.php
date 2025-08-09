@@ -13,6 +13,11 @@ abstract class AbstractClock implements Clock
         return new PsrUTCClock($this);
     }
 
+    public function asMongoUTC(): MongoUTCClock
+    {
+        return new PsrMongoUTCClock($this);
+    }
+
     public function asMicrotime(): MicrotimeClock
     {
         return new PsrMicrotimeClock($this);
