@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Recruiter\Clock;
 
+use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use Recruiter\DateTime\UTCDateTime;
@@ -141,6 +142,18 @@ class ManualClockTest extends ClockTestCase
             UTCDateTime::fromString('2023-10-01 10:00:00'),
             $clock->now(),
             'Clock should convert fixed time to UTC correctly',
+        );
+    }
+
+    public function testConversionToMongoUTC(): void
+    {
+        $fixedTime = new \DateTimeImmutable('2023-10-01 12:00:00', new \DateTimeZone('Europe/Berlin'));
+        $clock = new ManualClock($fixedTime)->asMongoUTC();
+
+        $this->assertEquals(
+            new MongoUTCDateTime(1_696_154_400_000),
+            $clock->now(),
+            'Clock should convert fixed time to MongoDB UTCDateTime correctly',
         );
     }
 
