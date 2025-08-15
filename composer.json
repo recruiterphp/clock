@@ -11,7 +11,7 @@
     "require": {
         "php": "^8.4",
         "ext-mongodb": ">=1.15",
-        "symfony/clock": "^7.3"
+        "symfony/clock": "^7.3 || ^8.0"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.47",
