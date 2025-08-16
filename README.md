@@ -1,6 +1,6 @@
 # Recruiter\Clock
 
-A comprehensive clock and date/time library for PHP 8.4+, featuring testable time manipulation and MongoDB integration.
+A comprehensive clock and date/time library for PHP 8.4+, featuring Symfony Clock integration, testable time manipulation, and native MongoDB support.
 
 ## Installation
 
@@ -12,88 +12,140 @@ composer require recruiterphp/clock
 
 - PHP 8.4+
 - MongoDB extension >=1.15
+- Symfony Clock ^7.3
 
 ## Quick Start
 
 ```php
+use Recruiter\Clock\ManualClock;
 use Recruiter\Clock\SystemClock;
-use Recruiter\Clock\FixedClock;
 use Recruiter\DateTime\UTCDateTime;
 
 // Production: Use system time
 $clock = new SystemClock();
-$now = $clock->current(); // Returns DateTime
+$now = $clock->now(); // Returns DateTimeImmutable
 
-// Testing: Use fixed time
-$clock = new FixedClock(new DateTime('2024-01-01 12:00:00'));
-$fixedTime = $clock->current(); // Always returns 2024-01-01 12:00:00
+// Testing: Use fixed time (DateTime gets converted to DateTimeImmutable)
+$clock = new ManualClock(new \DateTimeImmutable('2024-01-01 12:00:00'));
+$fixedTime = $clock->now(); // Always returns 2024-01-01 12:00:00
 
 // UTC DateTime with microsecond precision
 $utcTime = UTCDateTime::now();
 echo $utcTime->toIso8601WithMicroseconds(); // 2024-01-01T12:00:00.123456+0000
+
+// MongoDB integration
+$mongoClock = $clock->asMongoUTC();
+$bsonDateTime = $mongoClock->now(); // Returns MongoDB\BSON\UTCDateTime
 ```
 
 ## Core Interfaces
 
 ### Clock
-Basic clock interface for getting current time:
+Primary clock interface extending Symfony's ClockInterface:
 
 ```php
-interface Clock
+use Symfony\Component\Clock\ClockInterface;
+
+interface Clock extends ClockInterface
 {
-    public function current(): DateTime;
+    // Methods from Symfony's ClockInterface:
+    // - now(): \DateTimeImmutable
+    // - sleep(float|int $seconds): void
+    // - withTimeZone(\DateTimeZone|string $timezone): static
+    
+    // Additional methods for specialized clocks:
+    public function asUTC(): UTCClock;
+    public function asMongoUTC(): MongoUTCClock;
+    public function asMicrotime(): MicrotimeClock;
+    public function stopWatch(): StopWatch;
 }
 ```
 
 ### UTCClock
-Specialized interface for UTC time operations:
+Specialized interface for custom UTC DateTime operations:
 
 ```php
 interface UTCClock
 {
-    public function current(): UTCDateTime;
+    public function now(): UTCDateTime;
+}
+```
+
+### MongoUTCClock
+Native MongoDB UTC DateTime interface:
+
+```php
+interface MongoUTCClock
+{
+    public function now(): MongoDB\BSON\UTCDateTime;
 }
 ```
 
 ## Clock Implementations
 
 ### SystemClock
-Uses system time:
+Production clock using system time (wraps Symfony's NativeClock):
 
 ```php
 $clock = new SystemClock();
-$now = $clock->current();
+$now = $clock->now(); // Returns current DateTimeImmutable
+
+// With timezone
+$nyClock = new SystemClock('America/New_York');
 ```
 
-### FixedClock
-Returns a fixed time (perfect for testing):
+### ManualClock
+Test clock with manual time control (wraps Symfony's MockClock):
 
 ```php
-$clock = new FixedClock(new DateTime('2024-01-01'));
-// or
-$clock = FixedClock::fromIso8601('2024-01-01T12:00:00Z');
+// You can pass either DateTime or DateTimeImmutable - both work
+$clock = new ManualClock(new \DateTimeImmutable('2024-01-01'));
+// or use DateTime (gets converted internally to DateTimeImmutable)
+$clock = new ManualClock(new \DateTime('2024-01-01'));
+// or use the factory method
+$clock = ManualClock::fromIso8601('2024-01-01T12:00:00Z');
+
+// Advance time
+$clock->advance(3600); // Advance 1 hour (seconds)
+$clock->advance(new \DateInterval('P1D')); // Advance 1 day
 ```
 
 ### ProgressiveClock
-Advances time with each call:
+Auto-advancing clock that increments on each call:
 
 ```php
 $clock = new ProgressiveClock(
-    new DateTime('2024-01-01'),
-    new DateInterval('PT1H') // Advance 1 hour each call
+    new \DateTimeImmutable('2024-01-01'),
+    new \DateInterval('PT1H') // Advance 1 hour each call
 );
 
-$time1 = $clock->current(); // 2024-01-01 00:00:00
-$time2 = $clock->current(); // 2024-01-01 01:00:00
+$time1 = $clock->now(); // 2024-01-01 00:00:00
+$time2 = $clock->now(); // 2024-01-01 01:00:00
 ```
 
 ### SettableClock
-Allows manual time advancement:
+Switchable clock that can override any base clock:
 
 ```php
-$clock = new SettableClock(new DateTime('2024-01-01'));
-$clock->advance(3600); // Advance 1 hour
-$later = $clock->current(); // 2024-01-01 01:00:00
+$baseClock = new SystemClock();
+$clock = new SettableClock($baseClock);
+
+// Override with fixed time
+$clock->nowIs(new \DateTimeImmutable('2024-01-01'));
+$fixed = $clock->now(); // 2024-01-01
+
+// Reset to base clock
+$clock->reset();
+$system = $clock->now(); // Current system time
+```
+
+### DelayedClock
+Clock that returns time in the past:
+
+```php
+$baseClock = new SystemClock();
+$clock = new DelayedClock($baseClock, 3600); // 1 hour delay
+$past = $clock->now(); // Returns time from 1 hour ago
 ```
 
 ## UTCDateTime
@@ -153,21 +205,28 @@ foreach ($range->hourlyIterator() as $hour) {
 Perfect for testing time-dependent code:
 
 ```php
+use Recruiter\Clock\Clock;
+use Recruiter\Clock\ManualClock;
+
 class OrderService
 {
     public function __construct(private Clock $clock) {}
     
     public function createOrder(): Order
     {
-        return new Order($this->clock->current());
+        return new Order($this->clock->now());
     }
 }
 
 // In tests
-$fixedClock = new FixedClock(new DateTime('2024-01-01'));
-$service = new OrderService($fixedClock);
+$testClock = new ManualClock(new \DateTimeImmutable('2024-01-01'));
+$service = new OrderService($testClock);
 $order = $service->createOrder();
 // Order will always have 2024-01-01 timestamp
+
+// Advance time to test time-based logic
+$testClock->advance(3600); // 1 hour later
+$laterOrder = $service->createOrder();
 ```
 
 ## Development
