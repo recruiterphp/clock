@@ -11,10 +11,14 @@ permissions:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        php_version: ['8.4', '8.5']
     runs-on: ubuntu-latest
 
     env:
       COMPOSE_FILE: compose.yaml
+      PHP_VERSION: ${{ matrix.php_version }}
 
     steps:
     - uses: actions/checkout@v4
@@ -32,11 +36,11 @@ jobs:
         target: ci
         push: false
         load: true
-        tags: recruiterphp/clock-php:latest
+        tags: recruiterphp/clock-php:php-${{ matrix.php_version }}-latest
         build-args: |
-          PHP_VERSION=8.4
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+          PHP_VERSION=${{ matrix.php_version }}
+        cache-from: type=gha,scope=php-${{ matrix.php_version }}
+        cache-to: type=gha,scope=php-${{ matrix.php_version }},mode=max
 
     - name: Run test suite
       run: make test
